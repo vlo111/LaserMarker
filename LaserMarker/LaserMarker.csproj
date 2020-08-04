@@ -1,0 +1,231 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.3.0\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4F01B5C9-46C2-4406-B6CE-9D21744C4376}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>LaserMarker</RootNamespace>
+    <AssemblyName>LaserMarker</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>OSport.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Accessibility" />
+    <Reference Include="DevExpress.Data.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Printing.v19.2.Core, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Sparkline.v19.2.Core, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Utils.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraBars.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraEditors.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraLayout.v19.2, Version=19.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Data.SQLite, Version=1.0.113.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Core.1.0.113.1\lib\net46\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.EF6, Version=1.0.113.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.EF6.1.0.113.0\lib\net46\System.Data.SQLite.EF6.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.Linq, Version=1.0.113.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Linq.1.0.113.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Telerik.WinControls, Version=2019.2.618.20, Culture=neutral, PublicKeyToken=5bb2a467cbec794e, processorArchitecture=MSIL" />
+    <Reference Include="Telerik.WinControls.UI, Version=2019.2.618.20, Culture=neutral, PublicKeyToken=5bb2a467cbec794e, processorArchitecture=MSIL" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CustomFlyoutDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomMessage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomMessage.Designer.cs">
+      <DependentUpon>CustomMessage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataAccess\UserDataDto.cs" />
+    <Compile Include="DataAccess\UserDataRepository.cs" />
+    <Compile Include="Helper\ControlSearch.cs" />
+    <Compile Include="LaserMarker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LaserMarker.Designer.cs">
+      <DependentUpon>LaserMarker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Preview.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Preview.Designer.cs">
+      <DependentUpon>Preview.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="State\CurrentApiData.cs" />
+    <Compile Include="State\CurrentData.cs" />
+    <Compile Include="State\CurrentUIData.cs" />
+    <Compile Include="UserControls\GetEvents.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\GetEvents.Designer.cs">
+      <DependentUpon>GetEvents.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\SearchCompetitor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\SearchCompetitor.Designer.cs">
+      <DependentUpon>SearchCompetitor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\SearchCompetitorPreview.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\SearchCompetitorPreview.Designer.cs">
+      <DependentUpon>SearchCompetitorPreview.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\UpdateEzdData.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\UpdateEzdData.Designer.cs">
+      <DependentUpon>UpdateEzdData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\UpdateEzdDataFromApi.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\UpdateEzdDataFromApi.Designer.cs">
+      <DependentUpon>UpdateEzdDataFromApi.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="CustomMessage.resx">
+      <DependentUpon>CustomMessage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LaserMarker.resx">
+      <DependentUpon>LaserMarker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Preview.resx">
+      <DependentUpon>Preview.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\licenses.licx" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UserControls\GetEvents.resx">
+      <DependentUpon>GetEvents.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\SearchCompetitor.resx">
+      <DependentUpon>SearchCompetitor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\SearchCompetitorPreview.resx">
+      <DependentUpon>SearchCompetitorPreview.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\UpdateEzdData.resx">
+      <DependentUpon>UpdateEzdData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\UpdateEzdDataFromApi.resx">
+      <DependentUpon>UpdateEzdDataFromApi.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\API\API.csproj">
+      <Project>{6B6F17D7-122A-4D64-9C2A-8240514621BD}</Project>
+      <Name>API</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EzdDataControl\EzdDataControl.csproj">
+      <Project>{97c2c79e-41b0-4b40-95fd-9a7116b9bdcc}</Project>
+      <Name>EzdDataControl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EzdDataL\EzdDataL.csproj">
+      <Project>{c4a3d472-8914-493c-a6a4-68cf30281022}</Project>
+      <Name>EzdDataL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PictureControl\PictureControl.csproj">
+      <Project>{e330087d-2ce1-4938-a5a0-05d0312bbb56}</Project>
+      <Name>PictureControl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SDK\SDK.csproj">
+      <Project>{42E23EBF-26D8-40A8-A555-64CADDA29B8A}</Project>
+      <Name>SDK</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="OSport.ico" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.3.0\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.3.0\build\EntityFramework.targets'))" />
+    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.113.1\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.113.1\build\net46\System.Data.SQLite.Core.targets'))" />
+  </Target>
+  <Import Project="..\packages\EntityFramework.6.3.0\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.targets')" />
+  <Import Project="..\packages\System.Data.SQLite.Core.1.0.113.1\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.113.1\build\net46\System.Data.SQLite.Core.targets')" />
+</Project>
