@@ -12,7 +12,7 @@
 
         public string Password { get; set; }
 
-        public string Url { get; set; }
+        public string UrlSport { get; set; }
 
         public string BgImageName { get; set; }
 

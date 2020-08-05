@@ -11,8 +11,6 @@
 
         public static TextEdit BibText { get; set; }
 
-        public static Size WindowSize { get; set; }
-
         public static Size RightPanelSize { get; set; }
     }
 }

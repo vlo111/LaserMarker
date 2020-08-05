@@ -519,7 +519,7 @@
             this.testBtn.Size = new System.Drawing.Size(113, 66);
             this.testBtn.StyleController = this.layoutControl2;
             this.testBtn.TabIndex = 118;
-            this.testBtn.Tag = "redMark";
+            this.testBtn.Tag = "redMarkContour";
             this.testBtn.Text = "TEST";
             this.testBtn.Click += new System.EventHandler(this.TestBtn_Click);
             // 

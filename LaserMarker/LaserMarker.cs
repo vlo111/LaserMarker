@@ -11,11 +11,14 @@
 
     using API;
 
+    using ControlScreen;
+
     using DevExpress.XtraEditors;
 
     using EzdDataL;
 
     using global::LaserMarker.DataAccess;
+    using global::LaserMarker.Helper;
     using global::LaserMarker.State;
     using global::LaserMarker.UserControls;
 
@@ -129,10 +132,11 @@
                 // Connect sdk
                 var err = JczLmc.Initialize(Application.StartupPath, true);
 
-                this.rightpanel.Width = SystemInformation.VirtualScreen.Width / 100 * 30;
+                XtraMessageBox.Show(err.ToString(), "status code", MessageBoxButtons.OK);
 
-                this.panel1.Height = SystemInformation.VirtualScreen.Height
-                                         - (SystemInformation.VirtualScreen.Height / 100 * 30);
+                this.rightpanel.Width = ScreenSize.PrimaryWidth() / 100 * 30;
+
+                this.panel1.Height = ScreenSize.PrimaryHeight() - (ScreenSize.PrimaryHeight() / 100 * 30);
 
                 var userDataDtos = UserDataRepository.GetAllUser();
 
@@ -144,12 +148,24 @@
                     // init current pictures
                     var currentData = userDataDtos.LastOrDefault();
 
-                    this.InitialCurrentData(currentData);
+                    this.InitialCurrentDataFromUser(currentData);
 
                     this.CreateBgPictureBoxImage();
 
                     this.CreateEzdPictureBoxImage();
                 }
+
+                CurrentUIData.RightLayoutControl = this.rightLayoutControl;
+
+                CurrentUIData.RightPanelSize = new Size(this.rightpanel.Width, ScreenSize.PrimaryHeight());
+
+                CurrentData.EzdPictureBox = this.foregroundPictureBox;
+
+
+                // Initial preview
+                CurrentData.Preview = new Preview(this.panel1.ToImage()) { StartPosition = FormStartPosition.Manual };
+
+                CurrentData.Preview.Show();
             }
             catch (Exception ex)
             {
@@ -193,34 +209,20 @@
             }
         }
 
-        private void InitialCurrentData(UserDataDto currentData)
+        private void InitialCurrentDataFromUser(UserDataDto currentData)
         {
-            CurrentData.EzdPictureBox = this.foregroundPictureBox;
 
             this.currentPEindex = (int)currentData.Sequence;
 
             this.UpdateImageFromDB(currentData);
 
-            CurrentUIData.RightLayoutControl = this.rightLayoutControl;
-
-            CurrentUIData.WindowSize = new Size(
-                SystemInformation.VirtualScreen.Width,
-                SystemInformation.VirtualScreen.Height);
-
-            CurrentUIData.RightPanelSize = new Size(this.rightpanel.Width, SystemInformation.VirtualScreen.Height);
-
             this.urlTextEdit.Text = currentData.Login;
 
             this.passwordTextEdit.Text = currentData.Password;
 
-            this.urlTextEdit.Text = currentData.Url;
+            this.urlTextEdit.Text = currentData.UrlSport;
 
             CurrentApiData.Token = currentData.Token;
-
-            // Initial preview
-            CurrentData.Preview = new Preview(this.panel1.ToImage()) { StartPosition = FormStartPosition.Manual };
-
-            CurrentData.Preview.Show();
         }
 
         #endregion
@@ -270,7 +272,7 @@
             catch (Exception ex)
             {
                 XtraMessageBox.Show(
-                    "Прове  рте логин/пароль или нет доступ к апи, проверьте интернет соединения",
+                    @"Проверте логин/пароль или нет доступ к апи, проверьте интернет соединения",
                     "Error",
                     MessageBoxButtons.OK);
 
@@ -724,7 +726,7 @@
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK);
+                XtraMessageBox.Show(ex.InnerException.Message, "Error", MessageBoxButtons.OK);
             }
         }
 
@@ -800,7 +802,7 @@
                         Sequence = currentPEindex,
                         Login = this.loginTextEdit.Text,
                         Password = this.passwordTextEdit.Text,
-                        Url = this.urlTextEdit.Text,
+                        UrlSport = this.urlTextEdit.Text,
                         BgImageName = CurrentData.BgName,
                         EzdImageName = CurrentData.EzdName,
                         FullImageName = CurrentData.FullImageName,

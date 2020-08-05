@@ -7,10 +7,9 @@
 
     public class Queries
     {
-
-        public static async Task<string> GetRequestAsync(string url)
+        public static async Task<string> GetRequestAsync(string uri)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
 
             Task<WebResponse> task = Task.Factory.FromAsync(
                 request.BeginGetResponse,

@@ -8,34 +8,18 @@
     using DevExpress.XtraEditors;
 
     using EzdDataControl;
+    using ControlScreen;
     using global::LaserMarker.UserControls;
 
     public partial class Preview : Form
     {
-        private Screen GetSecondaryScreen()
-        {
-            if (Screen.AllScreens.Length == 1)
-            {
-                return null;
-            }
-
-            foreach (Screen screen in Screen.AllScreens)
-            {
-                if (screen.Primary == false)
-                {
-                    return screen;
-                }
-            }
-
-            return null;
-        }
 
         public Preview(Bitmap image)
         {
             InitializeComponent();
 
             // Get the second monitor screen
-            Screen screen = GetSecondaryScreen();
+            Screen screen = ScreenSize.GetSecondaryScreen();
 
             if (screen != null)
             {
@@ -89,7 +73,11 @@
         {
             CustomFlyoutDialog.ShowForm(this, null, new SearchCompetitorPreview());
 
-            // new SearchCompetitorPreview().Show();
+            //using (var searchPreviewPopup = new SearchCompetitorPreview())
+            //{
+            //    var searchPreviewPopup = new SearchCompetitorPreview();
+            //    searchPreviewPopup.Show();
+            //}
         }
     }
 }

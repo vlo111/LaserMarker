@@ -1,5 +1,7 @@
 ﻿namespace LaserMarker.UserControls
 {
+    using ControlScreen;
+
     using System;
     using System.Collections.Generic;
     using System.Drawing;
@@ -13,7 +15,6 @@
     using DevExpress.XtraEditors;
 
     using EzdDataControl;
-
     using global::LaserMarker.State;
 
     using Newtonsoft.Json;
@@ -51,19 +52,13 @@
             this.listView1.Columns.AddRange(
                 new ColumnHeader[]
                     {
-                        new ColumnHeader() { Text = @"Bib", Width = 50 },
-                        new ColumnHeader() { Text = @"First Name", Width = 150 },
-                        new ColumnHeader() { Text = @"Last Name", Width = 150 },
-                        new ColumnHeader() { Text = @"Birth year", Width = 100 }
+                        new ColumnHeader() { Text = @"Bib", Width = this.listView1.Width / 100 * 20 },
+                        new ColumnHeader() { Text = @"First Name", Width = this.listView1.Width / 100 * 30  },
+                        new ColumnHeader() { Text = @"Last Name", Width = this.listView1.Width / 100 * 30  },
+                        new ColumnHeader() { Text = @"Birth year", Width = this.listView1.Width / 100 * 20  }
                     });
 
-            this.MaximumSize = new Size(CurrentUIData.WindowSize.Width, CurrentUIData.WindowSize.Height - (CurrentUIData.WindowSize.Height / 3));
-
-            this.Height = CurrentUIData.WindowSize.Height - (CurrentUIData.WindowSize.Height / 3);
-            this.Width = CurrentUIData.WindowSize.Width;
-
-            this.Left = 0;
-            this.Top = (CurrentUIData.WindowSize.Height - this.Height) / 2;
+            this.Width = ScreenSize.PrimaryWidth();
         }
 
         private async void searchControl1_TextChanged(object sender, EventArgs e)
@@ -103,8 +98,7 @@
             await Task.Delay(500, token).ConfigureAwait(true);
             try
             {
-                var task = await Queries.GetRequestAsync(
-                  $@"http://openeventor.ru/event/{CurrentApiData.Token}/plugins/engraver/get?search={this.searchControl.Text}");
+                var task = await Queries.GetRequestAsync($@"http://openeventor.ru/event/{CurrentApiData.Token}/plugins/engraver/get?search={this.searchControl.Text}");
 
                 this._competitors = JsonConvert.DeserializeObject<CompetitorList>(task);
 
@@ -117,11 +111,11 @@
             }
             catch (OperationCanceledException ex)
             {
-                throw;
+                throw ex;
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 

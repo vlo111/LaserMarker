@@ -42,8 +42,7 @@ namespace EzdDataControl
             {
                 var line = lines[i];
 
-                var value = line.Substring(line.IndexOf("=", StringComparison.Ordinal) + 1, line.Length - line.IndexOf("=", StringComparison.Ordinal) - 1)
-                    .Replace('.', ',');
+                var value = line.Substring(line.IndexOf("=", StringComparison.Ordinal) + 1, line.Length - line.IndexOf("=", StringComparison.Ordinal) - 1);
 
                 if (line.Contains("WORKSPACEWIDTH"))
                 {
@@ -76,10 +75,10 @@ namespace EzdDataControl
 
             File.WriteAllLines(filePath, lines);
 
-            Escale = 1d / (SystemInformation.VirtualScreen.Width / (double)Ewidth);
+            Escale = 1d / (ControlScreen.ScreenSize.PrimaryWidth() / (double)Ewidth);
             Escale = 0.0732064421669107;
 
-            EheightForGetPrev = (int)((SystemInformation.VirtualScreen.Width / (double)Ewidth) * (double)Eheight);
+            EheightForGetPrev = (int)((ControlScreen.ScreenSize.PrimaryWidth() / (double)Ewidth) * (double)Eheight);
         }
 
         public static void LoadImage(string fileName)
@@ -158,8 +157,8 @@ namespace EzdDataControl
 
         public static Image LoadImage(string fileName, int width, int height)
         {
-            // load ezd
-            JczLmc.LoadEzdFile(fileName);
+            JczLmc.LoadEzdFile(fileName).ToString();
+            
 
             return GetImagePreview();
         }
@@ -223,10 +222,10 @@ namespace EzdDataControl
             return GetImagePreview();
         }
 
-        private static Image GetImagePreview()
+        public static Image GetImagePreview()
         {
             var image = JczLmc.GetCurPreviewImage3(
-                SystemInformation.VirtualScreen.Width,
+                ControlScreen.ScreenSize.PrimaryWidth(),
                 EheightForGetPrev,
                 Ex,
                 Ey,

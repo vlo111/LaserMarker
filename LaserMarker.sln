@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PictureControl", "PictureCo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EzdDataL", "EzdDataL\EzdDataL.csproj", "{C4A3D472-8914-493C-A6A4-68CF30281022}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlScreen", "ControlScreen\ControlScreen.csproj", "{6EFBA253-DEAF-485E-A87C-4DD4ACB63EBF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{C4A3D472-8914-493C-A6A4-68CF30281022}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4A3D472-8914-493C-A6A4-68CF30281022}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4A3D472-8914-493C-A6A4-68CF30281022}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EFBA253-DEAF-485E-A87C-4DD4ACB63EBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EFBA253-DEAF-485E-A87C-4DD4ACB63EBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EFBA253-DEAF-485E-A87C-4DD4ACB63EBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EFBA253-DEAF-485E-A87C-4DD4ACB63EBF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

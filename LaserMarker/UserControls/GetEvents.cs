@@ -6,11 +6,9 @@
     using System.Linq;
     using DevExpress.XtraEditors;
     using Telerik.WinControls.UI;
-    //using LaserMark.State;
+    using ControlScreen;
     using System.Drawing;
     using API;
-
-    using global::LaserMarker.State;
 
     public partial class GetEvents : DevExpress.XtraEditors.XtraUserControl
     {
@@ -21,6 +19,8 @@
         public GetEvents(Eventor eventor)
         {
             InitializeComponent();
+            
+            this.Width = ScreenSize.PrimaryWidth();
 
             this._data = eventor.Events.Select(p => new Event { Token = p.Token, Id = p.Id, Name = p.Name }).ToList();
 
@@ -30,12 +30,12 @@
                 this.listBoxControl1.DisplayMember = "Name";
             }
 
-            waitingBar = new RadWaitingBar();
-            waitingBar.AssociatedControl = this.layoutControl21;
-            waitingBar.Size = new System.Drawing.Size(80, 80);
-            waitingBar.WaitingStyle = Telerik.WinControls.Enumerations.WaitingBarStyles.LineRing;
+            //waitingBar = new RadWaitingBar();
+            //waitingBar.AssociatedControl = this.layoutControl21;
+            //waitingBar.Size = new System.Drawing.Size(80, 80);
+            //waitingBar.WaitingStyle = Telerik.WinControls.Enumerations.WaitingBarStyles.LineRing;
 
-            this.layoutControl21.Controls.Add(waitingBar);
+            //this.layoutControl21.Controls.Add(waitingBar);
         }
 
         private void KeyBtns_Click(object sender, EventArgs e)
@@ -77,13 +77,13 @@
 
         private void GetEvents_Load(object sender, EventArgs e)
         {
-            this.MaximumSize = new Size(CurrentUIData.WindowSize.Width, CurrentUIData.WindowSize.Height - (CurrentUIData.WindowSize.Height / 3));
+            //this.MaximumSize = new Size(CurrentUIData.WindowSize.Width, CurrentUIData.WindowSize.Height - (CurrentUIData.WindowSize.Height / 3));
 
-            this.Height = CurrentUIData.WindowSize.Height - (CurrentUIData.WindowSize.Height / 3);
-            this.Width = CurrentUIData.WindowSize.Width;
+            //this.Height = CurrentUIData.WindowSize.Height - (CurrentUIData.WindowSize.Height / 3);
+            // this.Width = CurrentUIData.WindowSize.Width;
 
-            this.Left = 0;
-            this.Top = (CurrentUIData.WindowSize.Height - this.Height) / 2;
+            //this.Left = 0;
+            //this.Top = (CurrentUIData.WindowSize.Height - this.Height) / 2;
         }
 
     }

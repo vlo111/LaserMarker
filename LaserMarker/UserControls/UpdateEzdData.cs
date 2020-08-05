@@ -291,9 +291,10 @@
                 var comp = new Tuple<string, string>(text.Properties.NullText, text.Text);
 
                 CurrentData.EzdImage = ReopositoryEzdFile.UpdateCustomEzd(comp, CurrentData.EzdImage.Width, CurrentData.EzdImage.Height);
+                
                 CurrentData.EzdPictureBox.Refresh();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 XtraMessageBox.Show("Данные с этим номером не найдены", "Information", MessageBoxButtons.OK);
             }
@@ -321,6 +322,7 @@
                         btn.Appearance.BackColor = Color.FromArgb(192, 0, 0);
 
                         this.testBtn.Enabled = false;
+                        this.testBtn.BackColor = Color.LightSalmon;
                         this.testBtn.Cursor = Cursors.No;
                     }
                     else
@@ -338,6 +340,10 @@
                 btn.Appearance.BackColor = Color.FromArgb(0, 192, 192);
 
                 this.testBtn.Enabled = true;
+
+                this.testBtn.Appearance.BackColor = Color.LightSalmon;
+
+                
                 this.testBtn.Cursor = Cursors.No;
             }
         }
@@ -351,6 +357,15 @@
 
             if (!ReopositoryEzdFile.IsMarking())
             {
+                doWorkRun = false;
+                this.testBtn.Tag = "redMarkContour";
+
+                this.testBtn.Enabled = true;
+
+                this.testBtn.Appearance.BackColor = Color.FromArgb(192, 0, 0);
+
+                this.testBtn.Cursor = Cursors.Hand;
+
                 this.runBtn.Text = "RUN";
                 this.runBtn.Appearance.BackColor = Color.FromArgb(0, 192, 192);
             }
@@ -376,6 +391,7 @@
                 if (btn.Text == "TEST")
                 {
                     doWorkTest = true;
+
                     if (btn.Tag.ToString() == "redMark")
                     {
                         if (!testRedMarkBackgroundWorker.IsBusy)
@@ -401,17 +417,14 @@
                 else if (btn.Text == "STOP TEST")
                 {
                     doWorkTest = false;
+
                     if (btn.Tag.ToString() == "redMark")
                     {
                         testRedMarkBackgroundWorker.WorkerSupportsCancellation = true;
-
-                        btn.Tag = "redMarkContour";
                     }
                     else if (btn.Tag.ToString() == "redMarkContour")
                     {
                         testRedMarkContourBackgroundWorker.WorkerSupportsCancellation = true;
-
-                        btn.Tag = "redMark";
                     }
                     btn.BackColor = Color.FromArgb(0, 192, 192);
                     btn.Text = "TEST";
