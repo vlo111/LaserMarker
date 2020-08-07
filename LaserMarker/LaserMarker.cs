@@ -8,29 +8,19 @@
     using System.Linq;
     using System.Text;
     using System.Windows.Forms;
-
     using API;
-
-    using ControlScreen;
-
+    using BLL;
     using DevExpress.XtraEditors;
-
     using EzdDataL;
-
     using global::LaserMarker.DataAccess;
-    using global::LaserMarker.Helper;
     using global::LaserMarker.State;
     using global::LaserMarker.UserControls;
-
     using Newtonsoft.Json;
-
-    using PictureControl;
-
     using SDK;
 
     public partial class LaserMarker : Form
     {
-        private static List<Tuple<string, StringBuilder>> updatedEzdObjects;
+        private static List<Tuple<string, StringBuilder>> _updatedEzdObjects;
 
         #region Path Field
 
@@ -38,9 +28,9 @@
 
         #endregion
 
-        private int currentPEindex = 0;
+        private int _currentPEindex = 0;
 
-        private List<Tuple<string, StringBuilder>> ezdObjects;
+        private List<Tuple<string, StringBuilder>> _ezdObjects;
 
         #region PictureBox Field
 
@@ -129,14 +119,18 @@
         {
             try
             {
-                // Connect sdk
-                var err = JczLmc.Initialize(Application.StartupPath, true);
-
-                XtraMessageBox.Show(err.ToString(), "status code", MessageBoxButtons.OK);
-
                 this.rightpanel.Width = ScreenSize.PrimaryWidth() / 100 * 30;
 
                 this.panel1.Height = ScreenSize.PrimaryHeight() - (ScreenSize.PrimaryHeight() / 100 * 30);
+
+                CurrentUIData.RightLayoutControl = this.rightLayoutControl;
+
+                CurrentUIData.RightPanelSize = new Size(this.rightpanel.Width, ScreenSize.PrimaryHeight());
+
+                CurrentData.EzdPictureBox = this.foregroundPictureBox;
+
+                // Connect sdk
+                var err = JczLmc.Initialize(Application.StartupPath, true);
 
                 var userDataDtos = UserDataRepository.GetAllUser();
 
@@ -148,28 +142,24 @@
                     // init current pictures
                     var currentData = userDataDtos.LastOrDefault();
 
-                    this.InitialCurrentDataFromUser(currentData);
+                    if (currentData != null)
+                    {
+                        this.InitialCurrentDataFromUser(currentData);
 
-                    this.CreateBgPictureBoxImage();
+                        this.CreateBgPictureBoxImage();
 
-                    this.CreateEzdPictureBoxImage();
+                        this.CreateEzdPictureBoxImage();
+
+                        CurrentData.EzdImage = EzdDataControl.ReopositoryEzdFile.LoadAndGetImage(
+                            currentData.EzdImageName);
+
+                        this.OpenPreview();
+                    }
                 }
-
-                CurrentUIData.RightLayoutControl = this.rightLayoutControl;
-
-                CurrentUIData.RightPanelSize = new Size(this.rightpanel.Width, ScreenSize.PrimaryHeight());
-
-                CurrentData.EzdPictureBox = this.foregroundPictureBox;
-
-
-                // Initial preview
-                CurrentData.Preview = new Preview(this.panel1.ToImage()) { StartPosition = FormStartPosition.Manual };
-
-                CurrentData.Preview.Show();
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK);
+                XtraMessageBox.Show(ex.Message, @"Error", MessageBoxButtons.OK);
             }
         }
 
@@ -189,7 +179,7 @@
 
                 image.Tag = @"filled";
 
-                this.currentPEindex = i;
+                this._currentPEindex = i;
 
                 if (i + 1 != userDataDtos.Count)
                 {
@@ -211,10 +201,9 @@
 
         private void InitialCurrentDataFromUser(UserDataDto currentData)
         {
+            this._currentPEindex = (int) currentData.Sequence;
 
-            this.currentPEindex = (int)currentData.Sequence;
-
-            this.UpdateImageFromDB(currentData);
+            this.UpdateImageFromDb(currentData);
 
             this.urlTextEdit.Text = currentData.Login;
 
@@ -269,7 +258,7 @@
 
                 this.urlTextEdit.Text = $@"http://openeventor.ru/api/event/{CurrentApiData.Token}/get_event";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 XtraMessageBox.Show(
                     @"Проверте логин/пароль или нет доступ к апи, проверьте интернет соединения",
@@ -278,11 +267,11 @@
 
                 if (CurrentData.EzdImage != null)
                 {
-                    ezdObjects = EzdDataControl.ReopositoryEzdFile.GetEzdData();
+                    _ezdObjects = EzdDataControl.ReopositoryEzdFile.GetEzdData();
 
-                    updatedEzdObjects = new List<Tuple<string, StringBuilder>>();
+                    _updatedEzdObjects = new List<Tuple<string, StringBuilder>>();
 
-                    new UpdateEzdData(ezdObjects);
+                    new UpdateEzdData(_ezdObjects);
                 }
             }
         }
@@ -303,11 +292,11 @@
                     }
                     else
                     {
-                        ezdObjects = EzdDataControl.ReopositoryEzdFile.GetEzdData();
+                        _ezdObjects = EzdDataControl.ReopositoryEzdFile.GetEzdData();
 
-                        updatedEzdObjects = new List<Tuple<string, StringBuilder>>();
+                        _updatedEzdObjects = new List<Tuple<string, StringBuilder>>();
 
-                        new UpdateEzdData(ezdObjects);
+                        new UpdateEzdData(_ezdObjects);
                     }
                 }
                 catch (Exception ex)
@@ -317,7 +306,7 @@
             }
             else
             {
-                XtraMessageBox.Show("Пожалуйста, выберите ezd файл", "Error", MessageBoxButtons.OK);
+                XtraMessageBox.Show(@"Пожалуйста, выберите ezd файл", "Error", MessageBoxButtons.OK);
             }
         }
 
@@ -330,7 +319,7 @@
             var fg = this.CreateGraphics();
 
             // Fit width
-            this._fgZoom = (this.foregroundPictureBox.Width / (float)CurrentData.EzdImage.Width)
+            this._fgZoom = (this.foregroundPictureBox.Width / (float) CurrentData.EzdImage.Width)
                            * (CurrentData.EzdImage.HorizontalResolution / fg.DpiX);
 
             this.foregroundPictureBox.Refresh();
@@ -341,7 +330,7 @@
             var g = this.CreateGraphics();
 
             // Fit width
-            this._bgZoom = (this.backgroundPictureBox.Width / (float)CurrentData.BgImage.Width)
+            this._bgZoom = (this.backgroundPictureBox.Width / (float) CurrentData.BgImage.Width)
                            * (CurrentData.BgImage.HorizontalResolution / g.DpiX);
 
             this.backgroundPictureBox.Refresh();
@@ -368,32 +357,32 @@
                 switch (keyData)
                 {
                     case Keys.Right:
-                        this._bgImgx -= (int)(this.backgroundPictureBox.Width * 0.03F / this._bgZoom);
+                        this._bgImgx -= (int) (this.backgroundPictureBox.Width * 0.03F / this._bgZoom);
                         this.backgroundPictureBox.Refresh();
                         break;
 
                     case Keys.Left:
-                        this._bgImgx += (int)(this.backgroundPictureBox.Width * 0.03F / this._bgZoom);
+                        this._bgImgx += (int) (this.backgroundPictureBox.Width * 0.03F / this._bgZoom);
                         this.backgroundPictureBox.Refresh();
                         break;
 
                     case Keys.Down:
-                        this._bgImgy -= (int)(this.backgroundPictureBox.Height * 0.03F / this._bgZoom);
+                        this._bgImgy -= (int) (this.backgroundPictureBox.Height * 0.03F / this._bgZoom);
                         this.backgroundPictureBox.Refresh();
                         break;
 
                     case Keys.Up:
-                        this._bgImgy += (int)(this.backgroundPictureBox.Height * 0.03F / this._bgZoom);
+                        this._bgImgy += (int) (this.backgroundPictureBox.Height * 0.03F / this._bgZoom);
                         this.backgroundPictureBox.Refresh();
                         break;
 
                     case Keys.PageDown:
-                        this._bgImgy -= (int)(this.backgroundPictureBox.Height * 0.20F / this._bgZoom);
+                        this._bgImgy -= (int) (this.backgroundPictureBox.Height * 0.20F / this._bgZoom);
                         this.backgroundPictureBox.Refresh();
                         break;
 
                     case Keys.PageUp:
-                        this._bgImgy += (int)(this.backgroundPictureBox.Height * 0.20F / this._bgZoom);
+                        this._bgImgy += (int) (this.backgroundPictureBox.Height * 0.20F / this._bgZoom);
                         this.backgroundPictureBox.Refresh();
                         break;
                 }
@@ -407,32 +396,32 @@
             switch (keyData)
             {
                 case Keys.Right:
-                    this._fgImgx -= (int)(this.foregroundPictureBox.Width * 0.03F / this._fgZoom);
+                    this._fgImgx -= (int) (this.foregroundPictureBox.Width * 0.03F / this._fgZoom);
                     this.foregroundPictureBox.Refresh();
                     break;
 
                 case Keys.Left:
-                    this._fgImgx += (int)(this.foregroundPictureBox.Width * 0.03F / this._fgZoom);
+                    this._fgImgx += (int) (this.foregroundPictureBox.Width * 0.03F / this._fgZoom);
                     this.foregroundPictureBox.Refresh();
                     break;
 
                 case Keys.Down:
-                    this._fgImgy -= (int)(this.foregroundPictureBox.Height * 0.03F / this._fgZoom);
+                    this._fgImgy -= (int) (this.foregroundPictureBox.Height * 0.03F / this._fgZoom);
                     this.foregroundPictureBox.Refresh();
                     break;
 
                 case Keys.Up:
-                    this._fgImgy += (int)(this.foregroundPictureBox.Height * 0.03F / this._fgZoom);
+                    this._fgImgy += (int) (this.foregroundPictureBox.Height * 0.03F / this._fgZoom);
                     this.foregroundPictureBox.Refresh();
                     break;
 
                 case Keys.PageDown:
-                    this._fgImgy -= (int)(this.foregroundPictureBox.Height * 0.20F / this._fgZoom);
+                    this._fgImgy -= (int) (this.foregroundPictureBox.Height * 0.20F / this._fgZoom);
                     this.foregroundPictureBox.Refresh();
                     break;
 
                 case Keys.PageUp:
-                    this._fgImgy += (int)(this.foregroundPictureBox.Height * 0.20F / this._fgZoom);
+                    this._fgImgy += (int) (this.foregroundPictureBox.Height * 0.20F / this._fgZoom);
                     this.foregroundPictureBox.Refresh();
                     break;
             }
@@ -493,8 +482,8 @@
                     var deltaY = mousePosNow.Y - this._bg_mouseDown.Y;
 
                     // calculate new offset of image based on the current zoom factor
-                    this._bgImgx = (int)(this._bgStartx + (deltaX / this._bgZoom));
-                    this._bgImgy = (int)(this._bgStarty + (deltaY / this._bgZoom));
+                    this._bgImgx = (int) (this._bgStartx + (deltaX / this._bgZoom));
+                    this._bgImgy = (int) (this._bgStarty + (deltaY / this._bgZoom));
 
                     this.backgroundPictureBox.Refresh();
                 }
@@ -506,8 +495,8 @@
                     var deltaY = mousePosNow.Y - this._fg_mouseDown.Y;
 
                     // calculate new offset of image based on the current zoom factor
-                    this._fgImgx = (int)(this._fgStartx + (deltaX / this._fgZoom));
-                    this._fgImgy = (int)(this._fgStarty + (deltaY / this._fgZoom));
+                    this._fgImgx = (int) (this._fgStartx + (deltaX / this._fgZoom));
+                    this._fgImgy = (int) (this._fgStarty + (deltaY / this._fgZoom));
 
                     this.foregroundPictureBox.Refresh();
                 }
@@ -607,12 +596,12 @@
                 y = mousePosNow.Y - this.backgroundPictureBox.Location.Y;
 
                 // Where in the IMAGE is it now
-                oldimagex = (int)(x / oldzoom);
-                oldimagey = (int)(y / oldzoom);
+                oldimagex = (int) (x / oldzoom);
+                oldimagey = (int) (y / oldzoom);
 
                 // Where in the IMAGE will it be when the new zoom i made
-                newimagex = (int)(x / this._bgZoom);
-                newimagey = (int)(y / this._bgZoom);
+                newimagex = (int) (x / this._bgZoom);
+                newimagey = (int) (y / this._bgZoom);
 
                 // Where to move image to keep focus on one point
                 this._bgImgx = newimagex - oldimagex + this._bgImgx;
@@ -644,11 +633,11 @@
             x = mousePosNow.X - this.foregroundPictureBox.Location.X;
             y = mousePosNow.Y - this.foregroundPictureBox.Location.Y;
 
-            oldimagex = (int)(x / oldzoom);
-            oldimagey = (int)(y / oldzoom);
+            oldimagex = (int) (x / oldzoom);
+            oldimagey = (int) (y / oldzoom);
 
-            newimagex = (int)(x / this._fgZoom);
-            newimagey = (int)(y / this._fgZoom);
+            newimagex = (int) (x / this._fgZoom);
+            newimagey = (int) (y / this._fgZoom);
 
             // Where to move image to keep focus on one point
             this._fgImgx = newimagex - oldimagex + this._fgImgx;
@@ -665,11 +654,15 @@
         private void UploadBGBtn_Click(object sender, EventArgs e)
         {
             this.Upload(UploadType.image);
+
+            this.OpenPreview();
         }
 
         private void UploadEzdBtn_Click(object sender, EventArgs e)
         {
             this.Upload(UploadType.Ezd);
+
+            this.OpenPreview();
         }
 
         private void Upload(UploadType type)
@@ -678,10 +671,10 @@
             {
                 // take filter type
                 var filter = type == UploadType.Ezd
-                                 ? @"EZD file (*.ezd) | *.ezd"
-                                 : @"Image files (*.jpg, *.jpeg, *.png) | *.jpg; *.jpeg; *.png";
+                    ? @"EZD file (*.ezd) | *.ezd"
+                    : @"Image files (*.jpg, *.jpeg, *.png) | *.jpg; *.jpeg; *.png";
 
-                using (var ofd = new OpenFileDialog { Multiselect = false, ValidateNames = true, Filter = filter })
+                using (var ofd = new OpenFileDialog {Multiselect = false, ValidateNames = true, Filter = filter})
                 {
                     if (ofd.ShowDialog() != DialogResult.OK)
                     {
@@ -691,33 +684,31 @@
                     switch (type)
                     {
                         case UploadType.Ezd when ofd.FileName != null:
-                            {
-                                this.ezdFileLbl.Text = Path.GetFileName(ofd.FileName);
+                        {
+                            this.ezdFileLbl.Text = Path.GetFileName(ofd.FileName);
 
-                                CurrentData.EzdImage = EzdDataControl.ReopositoryEzdFile.LoadImage(
-                                    ofd.FileName,
-                                    this.foregroundPictureBox.Width,
-                                    this.foregroundPictureBox.Height);
+                            CurrentData.EzdImage = EzdDataControl.ReopositoryEzdFile.LoadAndGetImage(
+                                ofd.FileName);
 
-                                CurrentData.EzdName = ofd.FileName;
+                            CurrentData.EzdName = ofd.FileName;
 
-                                this.CreateEzdPictureBoxImage();
+                            this.CreateEzdPictureBoxImage();
 
-                                break;
-                            }
+                            break;
+                        }
 
                         case UploadType.image when ofd.FileName != null:
-                            {
-                                this.bgImageLbl.Text = Path.GetFileName(ofd.FileName);
+                        {
+                            this.bgImageLbl.Text = Path.GetFileName(ofd.FileName);
 
-                                CurrentData.BgImage = Image.FromFile(ofd.FileName);
+                            CurrentData.BgImage = Image.FromFile(ofd.FileName);
 
-                                CurrentData.BgName = ofd.FileName;
+                            CurrentData.BgName = ofd.FileName;
 
-                                this.CreateBgPictureBoxImage();
+                            this.CreateBgPictureBoxImage();
 
-                                break;
-                            }
+                            break;
+                        }
 
                         default:
                             throw new ArgumentOutOfRangeException(nameof(type), type, null);
@@ -726,7 +717,7 @@
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show(ex.InnerException.Message, "Error", MessageBoxButtons.OK);
+                XtraMessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK);
             }
         }
 
@@ -738,7 +729,7 @@
         {
             if (CurrentData.BgImage != null && CurrentData.EzdImage != null)
             {
-                if (this.currentPEindex < 10)
+                if (this._currentPEindex < 10)
                 {
                     CurrentData.FullImageName = $@"FullImage{DateTime.Now.Ticks}.jpg";
 
@@ -748,16 +739,7 @@
 
                     this.UpdateTopPictures();
 
-                    CurrentData.Preview?.Close();
-
-                    // Screen preview
-                    if (Screen.AllScreens.Length > 1)
-                    {
-                        CurrentData.Preview =
-                            new Preview(this.panel1.ToImage()) { StartPosition = FormStartPosition.CenterParent };
-
-                        CurrentData.Preview.Show();
-                    }
+                    this.OpenPreview();
                 }
             }
             else
@@ -770,7 +752,7 @@
         {
             // Top button, Tab index 40 - 49
             var selectedImage = this.layoutControl2.Controls.OfType<PictureEdit>()
-                .Where(c => c.TabIndex == this.currentPEindex + 40).Select(c => c).First();
+                .Where(c => c.TabIndex == this._currentPEindex + 40).Select(c => c).First();
 
             selectedImage.Image = this.panel1.ToImage();
             selectedImage.Cursor = Cursors.Hand;
@@ -778,10 +760,10 @@
             selectedImage.Tag = "filled";
 
             // next plus
-            if (this.currentPEindex < 9)
+            if (this._currentPEindex < 9)
             {
                 var selectedNextImage = this.layoutControl2.Controls.OfType<PictureEdit>()
-                    .Where(c => c.TabIndex == (currentPEindex + 1) + 40).Select(c => c).First();
+                    .Where(c => c.TabIndex == (_currentPEindex + 1) + 40).Select(c => c).First();
 
                 if (selectedNextImage.Properties.ReadOnly)
                 {
@@ -797,23 +779,23 @@
         {
             UserDataRepository.Insert(
                 new UserDataDto
-                    {
-                        Token = CurrentApiData.Token,
-                        Sequence = currentPEindex,
-                        Login = this.loginTextEdit.Text,
-                        Password = this.passwordTextEdit.Text,
-                        UrlSport = this.urlTextEdit.Text,
-                        BgImageName = CurrentData.BgName,
-                        EzdImageName = CurrentData.EzdName,
-                        FullImageName = CurrentData.FullImageName,
-                        FullImage = CurrentData.FullImage.ToBytes(),
-                        BgImagePosX = this._bgImgx,
-                        BgImagePosY = this._bgImgy,
-                        BgImageScale = this._bgZoom,
-                        EzdImageScale = this._fgZoom,
-                        EzdImagePosX = this._fgImgx,
-                        EzdImagePosY = this._fgImgy
-                    });
+                {
+                    Token = CurrentApiData.Token,
+                    Sequence = _currentPEindex,
+                    Login = this.loginTextEdit.Text,
+                    Password = this.passwordTextEdit.Text,
+                    UrlSport = this.urlTextEdit.Text,
+                    BgImageName = CurrentData.BgName,
+                    EzdImageName = CurrentData.EzdName,
+                    FullImageName = CurrentData.FullImageName,
+                    FullImage = CurrentData.FullImage.ToBytes(),
+                    BgImagePosX = this._bgImgx,
+                    BgImagePosY = this._bgImgy,
+                    BgImageScale = this._bgZoom,
+                    EzdImageScale = this._fgZoom,
+                    EzdImagePosX = this._fgImgx,
+                    EzdImagePosY = this._fgImgy
+                });
         }
 
         private void DeleteBtn_Click(object sender, EventArgs e)
@@ -825,9 +807,9 @@
                 {
                     CurrentData.Preview?.Close();
 
-                    if (currentPEindex < 10)
+                    if (_currentPEindex < 10)
                     {
-                        UserDataRepository.DeleteByTabIndex(currentPEindex);
+                        UserDataRepository.DeleteByTabIndex(_currentPEindex);
 
                         CurrentData.Clear();
 
@@ -857,17 +839,17 @@
 
         private void TopPictureEdits_Click(object sender, EventArgs e)
         {
-            var picture = (PictureEdit)sender;
+            var picture = (PictureEdit) sender;
 
-            this.currentPEindex = picture.TabIndex - 40;
+            this._currentPEindex = picture.TabIndex - 40;
 
-            if ((string)picture.Tag == @"filled")
+            if ((string) picture.Tag == @"filled")
             {
                 if (!picture.Properties.ReadOnly)
                 {
-                    var userDto = UserDataRepository.GetByTabIndex(this.currentPEindex);
+                    var userDto = UserDataRepository.GetByTabIndex(this._currentPEindex);
 
-                    this.UpdateImageFromDB(userDto);
+                    this.UpdateImageFromDb(userDto);
 
                     this.foregroundPictureBox.Refresh();
 
@@ -890,7 +872,7 @@
             }
         }
 
-        private void UpdateImageFromDB(UserDataDto currentData)
+        private void UpdateImageFromDb(UserDataDto currentData)
         {
             // bg
             if (!File.Exists(currentData.BgImageName))
@@ -905,11 +887,11 @@
 
                 CurrentData.BgName = currentData.BgImageName;
 
-                this._bgImgx = (int)currentData.BgImagePosX;
+                this._bgImgx = (int) currentData.BgImagePosX;
 
-                this._bgImgy = (int)currentData.BgImagePosY;
+                this._bgImgy = (int) currentData.BgImagePosY;
 
-                this._bgZoom = (float)currentData.BgImageScale;
+                this._bgZoom = (float) currentData.BgImageScale;
             }
 
             // Ezd
@@ -919,18 +901,29 @@
             }
             else
             {
-                CurrentData.EzdImage = CurrentData.EzdImage = EzdDataControl.ReopositoryEzdFile.LoadImage(
-                                           currentData.EzdImageName,
-                                           this.foregroundPictureBox.Width,
-                                           this.foregroundPictureBox.Height);
+                CurrentData.EzdImage = EzdDataControl.ReopositoryEzdFile.LoadAndGetImage(
+                    currentData.EzdImageName);
 
                 CurrentData.EzdName = currentData.EzdImageName;
 
-                this._fgImgx = (int)currentData.EzdImagePosX;
+                this._fgImgx = (int) currentData.EzdImagePosX;
 
-                this._fgImgy = (int)currentData.EzdImagePosY;
+                this._fgImgy = (int) currentData.EzdImagePosY;
 
-                this._fgZoom = (float)currentData.EzdImageScale;
+                this._fgZoom = (float) currentData.EzdImageScale;
+            }
+        }
+
+        private void OpenPreview()
+        {
+            // Screen preview
+            if (Screen.AllScreens.Length > 1)
+            {
+                CurrentData.Preview?.Close();
+
+                CurrentData.Preview = new Preview(this.panel1.ToImage());
+
+                CurrentData.Preview.Show();
             }
         }
     }

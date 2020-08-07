@@ -5,7 +5,7 @@
     using System;
     using System.Collections.Generic;
     using DevExpress.XtraEditors;
-    using ControlScreen;
+    using BLL;
     using System.Windows.Forms;
 
     using System.Linq;
@@ -18,7 +18,7 @@
 
         public static string _searchText;
 
-        static System.Timers.Timer timer = new System.Timers.Timer(100);
+        static System.Timers.Timer timer = new System.Timers.Timer(1000);
 
         public SearchCompetitorPreview()
         {
@@ -34,9 +34,7 @@
                     });
 
 
-            this.Width = ScreenSize.PrimaryWidth();
-
-            
+            this.Width = ScreenSize.GetSecondaryScreen().Bounds.Width;
 
             timer.Elapsed += Timer_Elapsed;
 

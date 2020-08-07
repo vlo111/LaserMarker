@@ -1,6 +1,6 @@
 ﻿namespace LaserMarker.UserControls
 {
-    using ControlScreen;
+    using BLL;
 
     using System;
     using System.Collections.Generic;
@@ -37,6 +37,8 @@
 
             InitializeComponent();
 
+            this.Width = ScreenSize.PrimaryWidth();
+
             waitingBar = new RadWaitingBar();
             waitingBar.AssociatedControl = this.layoutControl2;
             waitingBar.Size = new System.Drawing.Size(80, 80);
@@ -57,8 +59,6 @@
                         new ColumnHeader() { Text = @"Last Name", Width = this.listView1.Width / 100 * 30  },
                         new ColumnHeader() { Text = @"Birth year", Width = this.listView1.Width / 100 * 20  }
                     });
-
-            this.Width = ScreenSize.PrimaryWidth();
         }
 
         private async void searchControl1_TextChanged(object sender, EventArgs e)
@@ -83,7 +83,7 @@
             try
             {
 
-                this.waitingBar.StartWaiting();
+                //this.waitingBar.StartWaiting();
 
                 await loadPrestatieGetCompetitorAsync(this.listView1, _tokenSource.Token, search);
             }
@@ -104,7 +104,7 @@
 
                 UpdateListView(search);
 
-                this.waitingBar.StopWaiting();
+                //this.waitingBar.StopWaiting();
 
                 token.ThrowIfCancellationRequested();
 
@@ -175,12 +175,15 @@
                 return;
             }
 
-            var selectedCompotitor = this._competitors.CompetitorDatas.FirstOrDefault(p => p.Bib == this.listView1.SelectedItems[0].Text);
+            if (this.listView1.SelectedItems.Count > 0)
+            {
+                var selectedCompotitor = this._competitors.CompetitorDatas.FirstOrDefault(p => p.Bib == this.listView1.SelectedItems[0].Text);
 
-            this._bib_text.Text = selectedCompotitor.Bib;
+                this._bib_text.Text = selectedCompotitor.Bib;
 
-            CurrentData.EzdImage = ReopositoryEzdFile.UpdateEzdApi(selectedCompotitor, CurrentData.EzdImage.Width, CurrentData.EzdImage.Height);
-            CurrentData.EzdPictureBox.Refresh();
+                CurrentData.EzdImage = ReopositoryEzdFile.UpdateEzdApi(selectedCompotitor, CurrentData.EzdImage.Width, CurrentData.EzdImage.Height);
+                CurrentData.EzdPictureBox.Refresh();
+            }
         }
     }
 }

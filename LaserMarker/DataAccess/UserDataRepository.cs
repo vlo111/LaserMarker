@@ -27,6 +27,28 @@
 
                 var command = connection.CreateCommand();
 
+                command.CommandText = @"CREATE TABLE IF NOT EXISTS [UserData] (
+  [Id] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL
+, [Login] text NULL
+, [Token] text NULL
+, [Password] text NULL
+, [Url] text NULL
+, [BgImageName] text NOT NULL
+, [EzdImageName] text NOT NULL
+, [FullImageName] text NOT NULL
+, [FullImage] image NOT NULL
+, [Sequence] bigint NOT NULL
+, [BgImageScale] real NOT NULL
+, [BgImagePosX] bigint NOT NULL
+, [BgImagePosY] bigint NOT NULL
+, [EzdImageScale] real NOT NULL
+, [EzdImagePosX] bigint NOT NULL
+, [EzdImagePosY] bigint NOT NULL
+);
+CREATE UNIQUE INDEX IF NOT EXISTS [UserData_UserData_UserData_UserData_UserData_sqlite_autoindex_UserData_1] ON [UserData] ([Id] ASC);";
+
+                command.ExecuteNonQuery();
+
                 command.CommandText = $@"DELETE FROM [UserData]
 WHERE Sequence = {user.Sequence} and EXISTS (select * from [UserData] where Sequence = {user.Sequence})";
 

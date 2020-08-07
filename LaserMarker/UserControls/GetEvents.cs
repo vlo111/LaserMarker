@@ -2,19 +2,17 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
     using System.Linq;
     using DevExpress.XtraEditors;
     using Telerik.WinControls.UI;
-    using ControlScreen;
-    using System.Drawing;
+    using BLL;
     using API;
 
     public partial class GetEvents : DevExpress.XtraEditors.XtraUserControl
     {
         private readonly IList<Event> _data;
 
-        RadWaitingBar waitingBar;
+        //RadWaitingBar waitingBar;
 
         public GetEvents(Eventor eventor)
         {
@@ -41,7 +39,7 @@
         private void KeyBtns_Click(object sender, EventArgs e)
         {
             var btn = (DevExpress.XtraEditors.SimpleButton)sender;
-            if (btn.Text == "<")
+            if (btn.Text == @"<")
             {
                 if (string.IsNullOrEmpty(this.searchEventControl.Text))
                 {

@@ -1,7 +1,4 @@
-﻿
-//using PictureControl;
-
-namespace EzdDataControl
+﻿namespace EzdDataControl
 {
     using System;
     using System.Collections.Generic;
@@ -16,9 +13,11 @@ namespace EzdDataControl
 
     using SDK;
 
-    public class ReopositoryEzdFile
+    using BLL;
+
+    public static class ReopositoryEzdFile
     {
-        private static readonly int Ewidth;
+        private static readonly int ezdWidth;
 
         private static readonly int Eheight;
 
@@ -43,10 +42,11 @@ namespace EzdDataControl
                 var line = lines[i];
 
                 var value = line.Substring(line.IndexOf("=", StringComparison.Ordinal) + 1, line.Length - line.IndexOf("=", StringComparison.Ordinal) - 1);
+                // .Replace(".", ",");
 
                 if (line.Contains("WORKSPACEWIDTH"))
                 {
-                    Ewidth = int.Parse(value, System.Globalization.NumberStyles.Any);
+                    ezdWidth = int.Parse(value, System.Globalization.NumberStyles.Any);
                 }
                 else if (line.Contains("WORKSPACEHEIGHT"))
                 {
@@ -66,7 +66,7 @@ namespace EzdDataControl
                     lines[i] = $@"SHOWWORKSPACE={EshowWorkSpace}";
                 }
 
-                if (Ewidth > 0 && Eheight > 0 && Ex > 0 && Ey > 0
+                if (ezdWidth > 0 && Eheight > 0 && Ex > 0 && Ey > 0
                     && !string.IsNullOrEmpty(EshowWorkSpace))
                 {
                     break;
@@ -75,10 +75,9 @@ namespace EzdDataControl
 
             File.WriteAllLines(filePath, lines);
 
-            Escale = 1d / (ControlScreen.ScreenSize.PrimaryWidth() / (double)Ewidth);
-            Escale = 0.0732064421669107;
+            Escale = 1d / (ScreenSize.PrimaryWidth() / (double)ezdWidth);
 
-            EheightForGetPrev = (int)((ControlScreen.ScreenSize.PrimaryWidth() / (double)Ewidth) * (double)Eheight);
+            EheightForGetPrev = (int)((ScreenSize.PrimaryWidth() / (double)ezdWidth) * (double)Eheight);
         }
 
         public static void LoadImage(string fileName)
@@ -155,10 +154,9 @@ namespace EzdDataControl
             return img;
         }
 
-        public static Image LoadImage(string fileName, int width, int height)
+        public static Image LoadAndGetImage(string fileName)
         {
-            JczLmc.LoadEzdFile(fileName).ToString();
-            
+            JczLmc.LoadEzdFile(fileName);
 
             return GetImagePreview();
         }
@@ -225,13 +223,13 @@ namespace EzdDataControl
         public static Image GetImagePreview()
         {
             var image = JczLmc.GetCurPreviewImage3(
-                ControlScreen.ScreenSize.PrimaryWidth(),
+                ScreenSize.PrimaryWidth(),
                 EheightForGetPrev,
                 Ex,
                 Ey,
                 Escale);
 
-            return PictureControl.Images.MakeImageTransparent(image);
+            return Images.MakeImageTransparent(image);
         }
 
         public static int Mark()

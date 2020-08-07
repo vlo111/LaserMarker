@@ -107,12 +107,12 @@
 
         private void SearchSimpleButton_Click(object sender, EventArgs e)
         {
-             CustomFlyoutDialog.ShowForm(_form, null, new SearchCompetitor(this.searchTextEdit));
+            CustomFlyoutDialog.ShowForm(_form, null, new SearchCompetitor(this.searchTextEdit));
 
             //using (var searchPopup = new SearchCompetitor(this.searchTextEdit))
             //{
-            //    var searchPopup = new SearchCompetitor(this.searchTextEdit);
-            //    searchPopup.Show();
+                //var searchPopup = new SearchCompetitor(this.searchTextEdit);
+                //searchPopup.Show();
             //}
         }
 

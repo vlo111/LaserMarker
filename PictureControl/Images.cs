@@ -1,4 +1,4 @@
-﻿namespace PictureControl
+﻿namespace BLL
 {
     using System.Drawing;
     using System.Drawing.Imaging;
@@ -42,6 +42,64 @@
             {
                 return Bitmap.FromStream(ms);
             }
+        }
+
+        public static Image Scale(this Image img)
+        {
+            int width;
+
+            int height;
+
+            int coefficientH;
+
+            int coefficientW;
+
+            var imgWidth = img.Width;
+
+            var imgHeight = img.Height;
+
+            // size second screen
+            var screenWidth = ScreenSize.GetSecondaryScreen().Bounds.Width;
+
+            var screenHeight = ScreenSize.GetSecondaryScreen().Bounds.Height;
+
+            if (imgWidth < screenWidth)
+            {
+                coefficientW = (int)(imgWidth / (double)screenWidth * 100);
+
+                width = img.Width + (img.Width * coefficientW / 100);
+                height = img.Height + (img.Height * coefficientW / 100);
+            }
+            else
+            {
+                coefficientW = (int)(imgWidth / (double)screenWidth * 100);
+
+                width = img.Width - (img.Width * coefficientW / 100);
+                height = img.Height - (img.Height * coefficientW / 100);
+            }
+
+            if (imgHeight < screenHeight)
+            {
+                coefficientH = (int)(imgHeight / (double)screenHeight * 100);
+
+                width = img.Width + (img.Width * coefficientH / 100);
+                height = img.Height + (img.Height * coefficientH / 100);
+            }
+            else
+            {
+                coefficientH = (int)(imgHeight / (double)screenHeight * 100);
+
+                width = img.Width + (img.Width * coefficientH / 100);
+                height = img.Height + (img.Height * coefficientH / 100);
+            }
+
+            Bitmap bmp = new Bitmap(img, width, height);
+
+            Graphics graphics = Graphics.FromImage(bmp);
+
+            graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+
+            return bmp;
         }
     }
 }

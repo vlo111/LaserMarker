@@ -1,5 +1,8 @@
-﻿namespace LaserMarker
+﻿
+namespace LaserMarker
 {
+    using BLL;
+
     using System;
     using System.ComponentModel;
     using System.Drawing;
@@ -8,7 +11,6 @@
     using DevExpress.XtraEditors;
 
     using EzdDataControl;
-    using ControlScreen;
     using global::LaserMarker.UserControls;
 
     public partial class Preview : Form
@@ -33,7 +35,7 @@
                 this.Size = new Size(screen.WorkingArea.Width, screen.WorkingArea.Height);
             }
             
-            this.pictureEdit1.Image = image;
+            this.pictureEdit1.Image = image.Scale();
         }
 
         private void RunBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -71,12 +73,12 @@
 
         public void ShowSearch()
         {
-            CustomFlyoutDialog.ShowForm(this, null, new SearchCompetitorPreview());
+            // CustomFlyoutDialog.ShowForm(this, null, new SearchCompetitorPreview());
 
             //using (var searchPreviewPopup = new SearchCompetitorPreview())
             //{
-            //    var searchPreviewPopup = new SearchCompetitorPreview();
-            //    searchPreviewPopup.Show();
+                var searchPreviewPopup = new SearchCompetitorPreview();
+                searchPreviewPopup.Show();
             //}
         }
     }

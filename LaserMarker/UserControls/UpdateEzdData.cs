@@ -1,5 +1,6 @@
 ﻿namespace LaserMarker.UserControls
 {
+    using BLL;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -190,7 +191,7 @@
                 CurrentData.EzdImage.Width,
                 CurrentData.EzdImage.Height);
 
-            CurrentData.EzdImage = PictureControl.Images.MakeImageTransparent(img);
+            CurrentData.EzdImage = Images.MakeImageTransparent(img);
 
             CurrentData.EzdPictureBox.Refresh();
         }
@@ -296,7 +297,7 @@
             }
             catch (Exception)
             {
-                XtraMessageBox.Show("Данные с этим номером не найдены", "Information", MessageBoxButtons.OK);
+                XtraMessageBox.Show(@"Данные с этим номером не найдены", "Information", MessageBoxButtons.OK);
             }
         }
 

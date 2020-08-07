@@ -19,6 +19,7 @@
         public static DialogResult ShowForm(Form owner, FlyoutAction actions, Control userControlToShowControl)
         {
             CustomFlyoutDialog customFlyoutDialog = new CustomFlyoutDialog(owner, actions, userControlToShowControl);
+            
             return customFlyoutDialog.ShowDialog();
         }
     }
