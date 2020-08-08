@@ -19,7 +19,7 @@
             connectionStringBuilder.DataSource = db;
         }
 
-        public static void Insert(UserDataDto user)
+        public static void CreateIfNotUserTable()
         {
             using (var connection = new SQLiteConnection(connectionStringBuilder.ConnectionString))
             {
@@ -48,6 +48,18 @@
 CREATE UNIQUE INDEX IF NOT EXISTS [UserData_UserData_UserData_UserData_UserData_sqlite_autoindex_UserData_1] ON [UserData] ([Id] ASC);";
 
                 command.ExecuteNonQuery();
+            }
+        }
+
+        public static void Insert(UserDataDto user)
+        {
+            CreateIfNotUserTable();
+
+            using (var connection = new SQLiteConnection(connectionStringBuilder.ConnectionString))
+            {
+                connection.Open();
+
+                var command = connection.CreateCommand();
 
                 command.CommandText = $@"DELETE FROM [UserData]
 WHERE Sequence = {user.Sequence} and EXISTS (select * from [UserData] where Sequence = {user.Sequence})";
@@ -82,7 +94,10 @@ VALUES ('{user.Token}'
 
         public static List<UserDataDto> GetAllUser()
         {
+            CreateIfNotUserTable();
+
             var user = new List<UserDataDto>();
+
             try
             {
                 using (var connection = new SQLiteConnection(connectionStringBuilder.ConnectionString))

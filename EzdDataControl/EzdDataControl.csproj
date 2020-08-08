@@ -48,7 +48,7 @@
       <Project>{6B6F17D7-122A-4D64-9C2A-8240514621BD}</Project>
       <Name>API</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PictureControl\BLL.csproj">
+    <ProjectReference Include="..\BLL\BLL.csproj">
       <Project>{e330087d-2ce1-4938-a5a0-05d0312bbb56}</Project>
       <Name>BLL</Name>
     </ProjectReference>

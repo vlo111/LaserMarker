@@ -1,4 +1,6 @@
-﻿namespace LaserMarker.UserControls
+﻿using System.Drawing;
+
+namespace LaserMarker.UserControls
 {
     using API;
 
@@ -10,7 +12,7 @@
 
     using System.Linq;
 
-    public partial class SearchCompetitorPreview : XtraUserControl
+    public partial class SearchCompetitorPreview : Form//: XtraUserControl
     {
         public static List<CompetitorData> _competitors;
 
@@ -20,7 +22,7 @@
 
         static System.Timers.Timer timer = new System.Timers.Timer(1000);
 
-        public SearchCompetitorPreview()
+        public SearchCompetitorPreview(int height)
         {
             InitializeComponent();
 
@@ -34,7 +36,22 @@
                     });
 
 
-            this.Width = ScreenSize.GetSecondaryScreen().Bounds.Width;
+            // Get the second monitor screen
+            Screen screen = ScreenSize.GetSecondaryScreen();
+
+            if (screen != null)
+            {
+                // Important
+                this.StartPosition = FormStartPosition.Manual;
+
+                // set the location to the top left of the second screen
+                this.Location = screen.WorkingArea.Location;
+
+                // set it fullscreen
+                this.Size = new Size(screen.WorkingArea.Width, height);
+
+                this.Location = new Point(this.Location.X, (screen.Bounds.Height - height) / 2);
+            }
 
             timer.Elapsed += Timer_Elapsed;
 

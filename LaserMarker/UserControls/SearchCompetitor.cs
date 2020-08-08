@@ -1,4 +1,6 @@
-﻿namespace LaserMarker.UserControls
+﻿using DevExpress.XtraBars.Docking2010.Customization;
+
+namespace LaserMarker.UserControls
 {
     using BLL;
 
@@ -21,7 +23,7 @@
 
     using Telerik.WinControls.UI;
 
-    public partial class SearchCompetitor : XtraUserControl
+    public partial class SearchCompetitor : Form // : XtraUserControl
     {
         private CompetitorList _competitors;
 
@@ -39,6 +41,8 @@
 
             this.Width = ScreenSize.PrimaryWidth();
 
+            this.Location = new Point(0, (ScreenSize.PrimaryHeight() - this.Height) / 2);
+
             waitingBar = new RadWaitingBar();
             waitingBar.AssociatedControl = this.layoutControl2;
             waitingBar.Size = new System.Drawing.Size(80, 80);
@@ -46,7 +50,7 @@
 
             this.layoutControl2.Controls.Add(waitingBar);
 
-            CurrentData.Preview.ShowSearch();
+            CurrentData.Preview.ShowSearch(this.Height);
         }
 
         private void SearchCompetitor_Load(object sender, EventArgs e)
@@ -83,13 +87,12 @@
             try
             {
 
-                //this.waitingBar.StartWaiting();
+                this.waitingBar.StartWaiting();
 
                 await loadPrestatieGetCompetitorAsync(this.listView1, _tokenSource.Token, search);
             }
-            catch (OperationCanceledException ex)
+            catch (OperationCanceledException)
             {
-                Console.WriteLine(ex.Message);
             }
         }
 
@@ -104,7 +107,7 @@
 
                 UpdateListView(search);
 
-                //this.waitingBar.StopWaiting();
+                this.waitingBar.StopWaiting();
 
                 token.ThrowIfCancellationRequested();
 
@@ -182,8 +185,25 @@
                 this._bib_text.Text = selectedCompotitor.Bib;
 
                 CurrentData.EzdImage = ReopositoryEzdFile.UpdateEzdApi(selectedCompotitor, CurrentData.EzdImage.Width, CurrentData.EzdImage.Height);
+                
                 CurrentData.EzdPictureBox.Refresh();
             }
+
+            CloseSearch();
+
+            CurrentData.Preview.UpdateImage(CurrentUIData.PanelImages.ToImage());
+        }
+
+        private void simpleButton12_Click(object sender, EventArgs e)
+        {
+            CloseSearch();
+        }
+
+        private void CloseSearch()
+        {
+            CurrentData.Preview.CloseSearch();
+
+            this.Close();
         }
     }
 }

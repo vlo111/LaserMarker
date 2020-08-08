@@ -78,6 +78,16 @@
                 layoutItemSize.Height = 40;
                 layoutItemSize.Width = 42;
 
+                for (int i = 60 + competitor.Count; i <= 67; i++)
+                {
+                    var textEdit = this.layoutControl2.Controls.OfType<TextEdit>()
+                        .Where(c => c.TabIndex == i)
+                        .Select(c => c)
+                        .First();
+
+                    textEdit.BackColor = Color.FromArgb(240, 240, 240);
+                }
+
                 for (int index = 60; index < (60 + competitor.Count); index++)
                 {
                     #region Initial TextEdits

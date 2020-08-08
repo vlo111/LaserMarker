@@ -8,11 +8,8 @@
     using System.Linq;
     using System.Text;
     using System.Windows.Forms;
-
     using API;
-
     using SDK;
-
     using BLL;
 
     public static class ReopositoryEzdFile
@@ -41,7 +38,8 @@
             {
                 var line = lines[i];
 
-                var value = line.Substring(line.IndexOf("=", StringComparison.Ordinal) + 1, line.Length - line.IndexOf("=", StringComparison.Ordinal) - 1);
+                var value = line.Substring(line.IndexOf("=", StringComparison.Ordinal) + 1,
+                    line.Length - line.IndexOf("=", StringComparison.Ordinal) - 1);
                 // .Replace(".", ",");
 
                 if (line.Contains("WORKSPACEWIDTH"))
@@ -75,9 +73,33 @@
 
             File.WriteAllLines(filePath, lines);
 
-            Escale = 1d / (ScreenSize.PrimaryWidth() / (double)ezdWidth);
+            Escale = 1d / (ScreenSize.PrimaryWidth() / (double) ezdWidth);
 
-            EheightForGetPrev = (int)((ScreenSize.PrimaryWidth() / (double)ezdWidth) * (double)Eheight);
+            EheightForGetPrev = (int) ((ScreenSize.PrimaryWidth() / (double) ezdWidth) * (double) Eheight);
+        }
+
+        public static string Initialize(string path, bool mode)
+        {
+            var errMessage = JczLmc.Initialize(path, mode);
+
+            if (errMessage == 0)
+            {
+                return string.Empty;
+            }
+            else if (errMessage == 1)
+            {
+                return "Now have a working EZCAD";
+            }
+            else if (errMessage > 1)
+            {
+                JczLmc.Close();
+
+                JczLmc.Initialize(path, !mode);
+
+                return string.Empty;
+            }
+
+            return string.Empty;
         }
 
         public static void LoadImage(string fileName)
@@ -129,24 +151,41 @@
 
         public static Image UpdateEzdApi(CompetitorData competitor, int width, int height)
         {
-            if (!string.IsNullOrEmpty(competitor.FirstName))
+            for (int i = 0; i <= 3; i++)
             {
-                JczLmc.ChangeTextByName(JczLmc.GetEntityNameByIndex(0), competitor.FirstName);
-            }
+                var ezdObj = JczLmc.GetEntityNameByIndex(i);
 
-            if (!string.IsNullOrEmpty(competitor.LastName))
-            {
-                JczLmc.ChangeTextByName(JczLmc.GetEntityNameByIndex(1), competitor.LastName);
-            }
+                if (ezdObj.ToLower() == "firstname")
+                {
+                    if (competitor.FirstName != null)
+                    {
+                        JczLmc.ChangeTextByName(ezdObj, competitor.FirstName);
+                    }
+                }
 
-            if (!string.IsNullOrEmpty(competitor.TimeOfDistance))
-            {
-                JczLmc.ChangeTextByName(JczLmc.GetEntityNameByIndex(2), competitor.TimeOfDistance);
-            }
+                if (ezdObj.ToLower() == "lastname")
+                {
+                    if (competitor.LastName != null)
+                    {
+                        JczLmc.ChangeTextByName(ezdObj, competitor.LastName);
+                    }
+                }
 
-            if (!string.IsNullOrEmpty(competitor.Distance))
-            {
-                JczLmc.ChangeTextByName(JczLmc.GetEntityNameByIndex(3), competitor.Distance);
+                if (ezdObj.ToLower() == "timeofdistance")
+                {
+                    if (competitor.TimeOfDistance != null)
+                    {
+                        JczLmc.ChangeTextByName(ezdObj, competitor.TimeOfDistance);
+                    }
+                }
+
+                if (ezdObj.ToLower() == "distance")
+                {
+                    if (competitor.Distance != null)
+                    {
+                        JczLmc.ChangeTextByName(ezdObj, competitor.Distance);
+                    }
+                }
             }
 
             var img = GetImagePreview();

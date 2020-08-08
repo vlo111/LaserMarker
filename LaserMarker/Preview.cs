@@ -15,8 +15,9 @@ namespace LaserMarker
 
     public partial class Preview : Form
     {
+        private SearchCompetitorPreview searchPreviewPopup;
 
-        public Preview(Bitmap image)
+        public Preview()
         {
             InitializeComponent();
 
@@ -26,7 +27,7 @@ namespace LaserMarker
             if (screen != null)
             {
                 // Important !
-                this.StartPosition = FormStartPosition.Manual;
+                this.StartPosition = FormStartPosition.CenterScreen;
 
                 // set the location to the top left of the second screen
                 this.Location = screen.WorkingArea.Location;
@@ -34,7 +35,10 @@ namespace LaserMarker
                 // set it fullscreen
                 this.Size = new Size(screen.WorkingArea.Width, screen.WorkingArea.Height);
             }
-            
+        }
+
+        public void UpdateImage(Bitmap image)
+        {
             this.pictureEdit1.Image = image.Scale();
         }
 
@@ -71,15 +75,16 @@ namespace LaserMarker
             }
         }
 
-        public void ShowSearch()
+        public void ShowSearch(int height)
         {
-            // CustomFlyoutDialog.ShowForm(this, null, new SearchCompetitorPreview());
+            searchPreviewPopup = new SearchCompetitorPreview(height);
 
-            //using (var searchPreviewPopup = new SearchCompetitorPreview())
-            //{
-                var searchPreviewPopup = new SearchCompetitorPreview();
-                searchPreviewPopup.Show();
-            //}
+            searchPreviewPopup.Show();
+        }
+
+        public void CloseSearch()
+        {
+            searchPreviewPopup.Close();
         }
     }
 }

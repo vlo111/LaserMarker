@@ -62,6 +62,7 @@
             this.runBtn.Appearance.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.runBtn.Appearance.Options.UseBackColor = true;
             this.runBtn.Appearance.Options.UseFont = true;
+            this.runBtn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.runBtn.Location = new System.Drawing.Point(2, 490);
             this.runBtn.MinimumSize = new System.Drawing.Size(0, 50);
             this.runBtn.Name = "runBtn";

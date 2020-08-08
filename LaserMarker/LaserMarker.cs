@@ -1,26 +1,26 @@
-﻿namespace LaserMarker
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using API;
+using BLL;
+using DevExpress.XtraEditors;
+using EzdDataL;
+using global::LaserMarker.DataAccess;
+using global::LaserMarker.State;
+using global::LaserMarker.UserControls;
+using Newtonsoft.Json;
+
+namespace LaserMarker
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Drawing;
-    using System.Drawing.Drawing2D;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
-    using System.Windows.Forms;
-    using API;
-    using BLL;
-    using DevExpress.XtraEditors;
-    using EzdDataL;
-    using global::LaserMarker.DataAccess;
-    using global::LaserMarker.State;
-    using global::LaserMarker.UserControls;
-    using Newtonsoft.Json;
-    using SDK;
+    using EZD = EzdDataControl.ReopositoryEzdFile;
 
     public partial class LaserMarker : Form
     {
-        private static List<Tuple<string, StringBuilder>> _updatedEzdObjects;
 
         #region Path Field
 
@@ -107,12 +107,12 @@
         {
             this.InitializeComponent();
 
-            Initial();
-
             this.foregroundPictureBox.Parent = this.backgroundPictureBox;
 
             this.foregroundPictureBox.Paint += this.ForegroundImageBox_Paint;
             this.backgroundPictureBox.Paint += this.BackgroundImageBox_Paint;
+
+            Initial();
         }
 
         private void Initial()
@@ -127,10 +127,17 @@
 
                 CurrentUIData.RightPanelSize = new Size(this.rightpanel.Width, ScreenSize.PrimaryHeight());
 
+                CurrentUIData.PanelImages = this.panel1;
+
                 CurrentData.EzdPictureBox = this.foregroundPictureBox;
 
                 // Connect sdk
-                var err = JczLmc.Initialize(Application.StartupPath, true);
+                var errMessage = EZD.Initialize(Application.StartupPath, false);
+
+                if (!string.IsNullOrEmpty(errMessage))
+                {
+                    XtraMessageBox.Show(errMessage, @"Error", MessageBoxButtons.OK);
+                }
 
                 var userDataDtos = UserDataRepository.GetAllUser();
 
@@ -149,11 +156,6 @@
                         this.CreateBgPictureBoxImage();
 
                         this.CreateEzdPictureBoxImage();
-
-                        CurrentData.EzdImage = EzdDataControl.ReopositoryEzdFile.LoadAndGetImage(
-                            currentData.EzdImageName);
-
-                        this.OpenPreview();
                     }
                 }
             }
@@ -216,28 +218,6 @@
 
         #endregion
 
-        private void LaserMarker_Load(object sender, EventArgs e)
-        {
-            try
-            {
-                Load data = new EzdDataL.Load();
-
-                if (!data.Go())
-                {
-                    //if (new CustomMessage().ShowDialog() >= 0)
-                    //{
-                    //    Application.Exit();
-                    //}
-
-                    Application.Exit();
-                }
-            }
-            catch (Exception)
-            {
-                Application.Exit();
-            }
-        }
-
         #region Login Event
 
         private async void LoginBtn_Click(object sender, EventArgs e)
@@ -267,9 +247,7 @@
 
                 if (CurrentData.EzdImage != null)
                 {
-                    _ezdObjects = EzdDataControl.ReopositoryEzdFile.GetEzdData();
-
-                    _updatedEzdObjects = new List<Tuple<string, StringBuilder>>();
+                    _ezdObjects = EZD.GetEzdData();
 
                     new UpdateEzdData(_ezdObjects);
                 }
@@ -292,9 +270,7 @@
                     }
                     else
                     {
-                        _ezdObjects = EzdDataControl.ReopositoryEzdFile.GetEzdData();
-
-                        _updatedEzdObjects = new List<Tuple<string, StringBuilder>>();
+                        _ezdObjects = EZD.GetEzdData();
 
                         new UpdateEzdData(_ezdObjects);
                     }
@@ -316,6 +292,11 @@
 
         private void CreateEzdPictureBoxImage()
         {
+            if (CurrentData.EzdImage == null)
+            {
+                CurrentData.EzdImage = new Bitmap(10, 10);
+            }
+
             var fg = this.CreateGraphics();
 
             // Fit width
@@ -327,6 +308,11 @@
 
         private void CreateBgPictureBoxImage()
         {
+            if (CurrentData.BgImage == null)
+            {
+                CurrentData.BgImage = new Bitmap(10, 10);
+            }
+
             var g = this.CreateGraphics();
 
             // Fit width
@@ -654,15 +640,11 @@
         private void UploadBGBtn_Click(object sender, EventArgs e)
         {
             this.Upload(UploadType.image);
-
-            this.OpenPreview();
         }
 
         private void UploadEzdBtn_Click(object sender, EventArgs e)
         {
             this.Upload(UploadType.Ezd);
-
-            this.OpenPreview();
         }
 
         private void Upload(UploadType type)
@@ -687,7 +669,7 @@
                         {
                             this.ezdFileLbl.Text = Path.GetFileName(ofd.FileName);
 
-                            CurrentData.EzdImage = EzdDataControl.ReopositoryEzdFile.LoadAndGetImage(
+                            CurrentData.EzdImage = EZD.LoadAndGetImage(
                                 ofd.FileName);
 
                             CurrentData.EzdName = ofd.FileName;
@@ -731,6 +713,11 @@
             {
                 if (this._currentPEindex < 10)
                 {
+                    if (CurrentData.EzdImage != null)
+                    {
+                        this.OpenPreview();
+                    }
+
                     CurrentData.FullImageName = $@"FullImage{DateTime.Now.Ticks}.jpg";
 
                     CurrentData.FullImage = this.panel1.ToImage();
@@ -738,8 +725,6 @@
                     this.SaveImageDB();
 
                     this.UpdateTopPictures();
-
-                    this.OpenPreview();
                 }
             }
             else
@@ -805,10 +790,9 @@
                 if (XtraMessageBox.Show("Вы действительно хотите удалить?", "Сообщения", MessageBoxButtons.YesNo)
                     == DialogResult.Yes)
                 {
-                    CurrentData.Preview?.Close();
-
                     if (_currentPEindex < 10)
                     {
+
                         UserDataRepository.DeleteByTabIndex(_currentPEindex);
 
                         CurrentData.Clear();
@@ -820,10 +804,17 @@
                         this.InitialTopPictures(userDataDtos);
 
                         this.bgImageLbl.Text = " ";
+
                         this.ezdFileLbl.Text = " ";
 
                         this.backgroundPictureBox.Refresh();
                         this.foregroundPictureBox.Refresh();
+
+                        CurrentData.Preview?.Close();
+
+                        CurrentData.Preview = null;
+
+                        this.OpenPreview();
                     }
                 }
             }
@@ -856,6 +847,11 @@
                     this.backgroundPictureBox.Refresh();
                 }
             }
+
+            if (CurrentData.EzdImage != null)
+            {
+                this.OpenPreview();
+            }
         }
 
         #endregion
@@ -878,8 +874,6 @@
             if (!File.Exists(currentData.BgImageName))
             {
                 XtraMessageBox.Show(@"Подложка не найдено", "Error", MessageBoxButtons.OK);
-
-                return;
             }
             else
             {
@@ -901,7 +895,7 @@
             }
             else
             {
-                CurrentData.EzdImage = EzdDataControl.ReopositoryEzdFile.LoadAndGetImage(
+                CurrentData.EzdImage = EZD.LoadAndGetImage(
                     currentData.EzdImageName);
 
                 CurrentData.EzdName = currentData.EzdImageName;
@@ -919,11 +913,43 @@
             // Screen preview
             if (Screen.AllScreens.Length > 1)
             {
-                CurrentData.Preview?.Close();
+                if (CurrentData.Preview == null)
+                {
+                    //CurrentData.Preview?.Close();
 
-                CurrentData.Preview = new Preview(this.panel1.ToImage());
+                    CurrentData.Preview = new Preview();
 
-                CurrentData.Preview.Show();
+                    CurrentData.Preview.Show();
+                }
+
+                CurrentData.Preview.UpdateImage(panel1.ToImage());
+            }
+        }
+
+        private void LaserMarker_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                Load data = new EzdDataL.Load();
+
+                if (!data.Go())
+                {
+                    //if (new CustomMessage().ShowDialog() >= 0)
+                    //{
+                    //    Application.Exit();
+                    //}
+
+                    Application.Exit();
+                }
+
+                if (CurrentData.EzdImage != null)
+                {
+                    this.OpenPreview();
+                }
+            }
+            catch (Exception)
+            {
+                Application.Exit();
             }
         }
     }

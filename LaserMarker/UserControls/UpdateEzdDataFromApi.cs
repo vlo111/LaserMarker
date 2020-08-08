@@ -13,11 +13,12 @@
     using DevExpress.XtraLayout;
     using Newtonsoft.Json;
     using API;
-    using EzdDataControl;
     using System.IO;
     using System.Threading;
 
     using global::LaserMarker.State;
+
+    using EZD = EzdDataControl.ReopositoryEzdFile;
 
     public partial class UpdateEzdDataFromApi : DevExpress.XtraEditors.XtraUserControl
     {
@@ -94,9 +95,10 @@
 
                 this._competitor = JsonConvert.DeserializeObject<Competitor>(task);
 
-                ReopositoryEzdFile.LoadImage(CurrentData.EzdName);
+                EZD.LoadImage(CurrentData.EzdName);
 
-                CurrentData.EzdImage = ReopositoryEzdFile.UpdateEzdApi(_competitor.CompetitorData, CurrentData.EzdImage.Width, CurrentData.EzdImage.Height);
+                CurrentData.EzdImage = EZD.UpdateEzdApi(_competitor.CompetitorData, CurrentData.EzdImage.Width, CurrentData.EzdImage.Height);
+               
                 CurrentData.EzdPictureBox.Refresh();
             }
             catch (Exception)
@@ -107,13 +109,9 @@
 
         private void SearchSimpleButton_Click(object sender, EventArgs e)
         {
-            CustomFlyoutDialog.ShowForm(_form, null, new SearchCompetitor(this.searchTextEdit));
+            var searchPopup = new SearchCompetitor(this.searchTextEdit);
 
-            //using (var searchPopup = new SearchCompetitor(this.searchTextEdit))
-            //{
-                //var searchPopup = new SearchCompetitor(this.searchTextEdit);
-                //searchPopup.Show();
-            //}
+            searchPopup.Show();
         }
 
         private void editEzdBtn_Click(object sender, EventArgs e)
@@ -158,7 +156,7 @@
             {
                 doWorkRun = false;
 
-                ReopositoryEzdFile.StopMark();
+                EZD.StopMark();
                 btn.Text = "RUN";
                 btn.Appearance.BackColor = Color.FromArgb(0, 192, 192);
 
@@ -175,10 +173,10 @@
         {
             if (doWorkRun)
             {
-                ReopositoryEzdFile.Mark();
+                EZD.Mark();
             }
 
-            if (!ReopositoryEzdFile.IsMarking())
+            if (!EZD.IsMarking())
             {
                 doWorkRun = false;
                 this.testBtn.Tag = "redMarkContour";
@@ -264,7 +262,7 @@
             while (doWorkTest)
             {
                 Thread.Sleep(100);
-                ReopositoryEzdFile.RedMark();
+                EZD.RedMark();
             }
         }
 
@@ -273,7 +271,7 @@
             while (doWorkTest)
             {
                 Thread.Sleep(100);
-                ReopositoryEzdFile.RedMarkContour();
+                EZD.RedMarkContour();
             }
         }
 

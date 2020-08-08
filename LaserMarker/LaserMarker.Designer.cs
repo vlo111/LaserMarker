@@ -165,7 +165,7 @@
             // 
             // rightpanel
             // 
-            this.rightpanel.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.rightpanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.rightpanel.Controls.Add(this.rightLayoutControl);
             this.rightpanel.Dock = System.Windows.Forms.DockStyle.Right;
             this.rightpanel.Location = new System.Drawing.Point(545, 0);
@@ -201,9 +201,11 @@
             // 
             // plusBtn
             // 
+            this.plusBtn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.plusBtn.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleCenter;
             this.plusBtn.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("plusBtn.ImageOptions.SvgImage")));
             this.plusBtn.Location = new System.Drawing.Point(252, 399);
+            this.plusBtn.MaximumSize = new System.Drawing.Size(40, 36);
             this.plusBtn.Name = "plusBtn";
             this.plusBtn.Size = new System.Drawing.Size(40, 36);
             this.plusBtn.StyleController = this.rightLayoutControl;
@@ -213,9 +215,11 @@
             // 
             // bgCheckBox
             // 
+            this.bgCheckBox.Cursor = System.Windows.Forms.Cursors.Hand;
             this.bgCheckBox.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleCenter;
             this.bgCheckBox.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("bgCheckBox.ImageOptions.SvgImage")));
             this.bgCheckBox.Location = new System.Drawing.Point(12, 286);
+            this.bgCheckBox.MaximumSize = new System.Drawing.Size(40, 36);
             this.bgCheckBox.Name = "bgCheckBox";
             this.bgCheckBox.Size = new System.Drawing.Size(40, 36);
             this.bgCheckBox.StyleController = this.rightLayoutControl;
@@ -223,9 +227,11 @@
             // 
             // munisBtn
             // 
+            this.munisBtn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.munisBtn.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleCenter;
             this.munisBtn.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("munisBtn.ImageOptions.SvgImage")));
             this.munisBtn.Location = new System.Drawing.Point(296, 399);
+            this.munisBtn.MaximumSize = new System.Drawing.Size(40, 36);
             this.munisBtn.Name = "munisBtn";
             this.munisBtn.Size = new System.Drawing.Size(40, 36);
             this.munisBtn.StyleController = this.rightLayoutControl;
@@ -234,9 +240,11 @@
             // 
             // fgCheckBox
             // 
+            this.fgCheckBox.Cursor = System.Windows.Forms.Cursors.Hand;
             this.fgCheckBox.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleCenter;
             this.fgCheckBox.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("fgCheckBox.ImageOptions.SvgImage")));
             this.fgCheckBox.Location = new System.Drawing.Point(12, 359);
+            this.fgCheckBox.MaximumSize = new System.Drawing.Size(40, 36);
             this.fgCheckBox.Name = "fgCheckBox";
             this.fgCheckBox.Size = new System.Drawing.Size(40, 36);
             this.fgCheckBox.StyleController = this.rightLayoutControl;
@@ -244,8 +252,10 @@
             // 
             // uploadEzdBtn
             // 
+            this.uploadEzdBtn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.uploadEzdBtn.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("uploadEzdBtn.ImageOptions.SvgImage")));
             this.uploadEzdBtn.Location = new System.Drawing.Point(296, 359);
+            this.uploadEzdBtn.MaximumSize = new System.Drawing.Size(40, 36);
             this.uploadEzdBtn.Name = "uploadEzdBtn";
             this.uploadEzdBtn.Size = new System.Drawing.Size(40, 36);
             this.uploadEzdBtn.StyleController = this.rightLayoutControl;
@@ -278,8 +288,10 @@
             // 
             // uploadBGBtn
             // 
+            this.uploadBGBtn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.uploadBGBtn.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("uploadBGBtn.ImageOptions.SvgImage")));
             this.uploadBGBtn.Location = new System.Drawing.Point(296, 286);
+            this.uploadBGBtn.MaximumSize = new System.Drawing.Size(40, 36);
             this.uploadBGBtn.Name = "uploadBGBtn";
             this.uploadBGBtn.Size = new System.Drawing.Size(40, 36);
             this.uploadBGBtn.StyleController = this.rightLayoutControl;
@@ -292,6 +304,7 @@
             this.saveBtn.Appearance.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.saveBtn.Appearance.Options.UseBackColor = true;
             this.saveBtn.Appearance.Options.UseFont = true;
+            this.saveBtn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.saveBtn.Location = new System.Drawing.Point(176, 480);
             this.saveBtn.Name = "saveBtn";
             this.saveBtn.Size = new System.Drawing.Size(160, 46);
@@ -306,6 +319,7 @@
             this.deleteBtn.Appearance.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.deleteBtn.Appearance.Options.UseBackColor = true;
             this.deleteBtn.Appearance.Options.UseFont = true;
+            this.deleteBtn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.deleteBtn.Location = new System.Drawing.Point(12, 480);
             this.deleteBtn.Name = "deleteBtn";
             this.deleteBtn.Size = new System.Drawing.Size(160, 46);
@@ -359,20 +373,23 @@
             // 
             // dialodUpdateEzd
             // 
+            this.dialodUpdateEzd.Cursor = System.Windows.Forms.Cursors.Hand;
             this.dialodUpdateEzd.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("dialodUpdateEzd.ImageOptions.SvgImage")));
-            this.dialodUpdateEzd.Location = new System.Drawing.Point(296, 12);
+            this.dialodUpdateEzd.Location = new System.Drawing.Point(298, 12);
+            this.dialodUpdateEzd.MaximumSize = new System.Drawing.Size(38, 36);
             this.dialodUpdateEzd.Name = "dialodUpdateEzd";
-            this.dialodUpdateEzd.Size = new System.Drawing.Size(40, 36);
+            this.dialodUpdateEzd.Size = new System.Drawing.Size(38, 36);
             this.dialodUpdateEzd.StyleController = this.rightLayoutControl;
             this.dialodUpdateEzd.TabIndex = 35;
             this.dialodUpdateEzd.Click += new System.EventHandler(this.DialogUpdateEzd_Click);
             // 
             // simpleButton3
             // 
-            this.simpleButton3.Appearance.BackColor = System.Drawing.Color.Teal;
+            this.simpleButton3.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.simpleButton3.Appearance.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.simpleButton3.Appearance.Options.UseBackColor = true;
             this.simpleButton3.Appearance.Options.UseFont = true;
+            this.simpleButton3.Cursor = System.Windows.Forms.Cursors.Hand;
             this.simpleButton3.Location = new System.Drawing.Point(176, 213);
             this.simpleButton3.Name = "simpleButton3";
             this.simpleButton3.Size = new System.Drawing.Size(160, 46);
@@ -603,9 +620,9 @@
             // layoutControlItem14
             // 
             this.layoutControlItem14.Control = this.dialodUpdateEzd;
-            this.layoutControlItem14.Location = new System.Drawing.Point(284, 0);
+            this.layoutControlItem14.Location = new System.Drawing.Point(286, 0);
             this.layoutControlItem14.Name = "layoutControlItem14";
-            this.layoutControlItem14.Size = new System.Drawing.Size(44, 40);
+            this.layoutControlItem14.Size = new System.Drawing.Size(42, 40);
             this.layoutControlItem14.TextSize = new System.Drawing.Size(0, 0);
             this.layoutControlItem14.TextVisible = false;
             // 
@@ -622,7 +639,7 @@
             this.emptySpaceItem7.AllowHotTrack = false;
             this.emptySpaceItem7.Location = new System.Drawing.Point(0, 0);
             this.emptySpaceItem7.Name = "emptySpaceItem7";
-            this.emptySpaceItem7.Size = new System.Drawing.Size(284, 40);
+            this.emptySpaceItem7.Size = new System.Drawing.Size(286, 40);
             this.emptySpaceItem7.TextSize = new System.Drawing.Size(0, 0);
             // 
             // emptySpaceItem3
@@ -659,7 +676,7 @@
             this.panel1.Controls.Add(this.backgroundPictureBox);
             this.panel1.Location = new System.Drawing.Point(12, 87);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(586, 406);
+            this.panel1.Size = new System.Drawing.Size(586, 405);
             this.panel1.TabIndex = 13;
             // 
             // foregroundPictureBox
@@ -668,7 +685,7 @@
             this.foregroundPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.foregroundPictureBox.Location = new System.Drawing.Point(0, 0);
             this.foregroundPictureBox.Name = "foregroundPictureBox";
-            this.foregroundPictureBox.Size = new System.Drawing.Size(586, 406);
+            this.foregroundPictureBox.Size = new System.Drawing.Size(586, 405);
             this.foregroundPictureBox.TabIndex = 1;
             this.foregroundPictureBox.TabStop = false;
             this.foregroundPictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ForegroundPictureBox_MouseDown);
@@ -680,7 +697,7 @@
             this.backgroundPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.backgroundPictureBox.Location = new System.Drawing.Point(0, 0);
             this.backgroundPictureBox.Name = "backgroundPictureBox";
-            this.backgroundPictureBox.Size = new System.Drawing.Size(586, 406);
+            this.backgroundPictureBox.Size = new System.Drawing.Size(586, 405);
             this.backgroundPictureBox.TabIndex = 0;
             this.backgroundPictureBox.TabStop = false;
             // 
@@ -885,14 +902,14 @@
             this.layoutControlItem16,
             this.PositionLabel});
             this.layoutControlGroup1.Name = "Root";
-            this.layoutControlGroup1.Size = new System.Drawing.Size(610, 522);
+            this.layoutControlGroup1.Size = new System.Drawing.Size(610, 521);
             this.layoutControlGroup1.TextVisible = false;
             // 
             // headerLbl
             // 
             this.headerLbl.AllowHotTrack = false;
             this.headerLbl.AppearanceItemCaption.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.headerLbl.AppearanceItemCaption.ForeColor = System.Drawing.Color.DarkGray;
+            this.headerLbl.AppearanceItemCaption.ForeColor = System.Drawing.Color.Gray;
             this.headerLbl.AppearanceItemCaption.Options.UseFont = true;
             this.headerLbl.AppearanceItemCaption.Options.UseForeColor = true;
             this.headerLbl.AppearanceItemCaption.Options.UseTextOptions = true;
@@ -1028,14 +1045,14 @@
             this.layoutControlItem16.Control = this.panel1;
             this.layoutControlItem16.Location = new System.Drawing.Point(0, 75);
             this.layoutControlItem16.Name = "layoutControlItem16";
-            this.layoutControlItem16.Size = new System.Drawing.Size(590, 410);
+            this.layoutControlItem16.Size = new System.Drawing.Size(590, 409);
             this.layoutControlItem16.TextSize = new System.Drawing.Size(0, 0);
             this.layoutControlItem16.TextVisible = false;
             // 
             // PositionLabel
             // 
             this.PositionLabel.AllowHotTrack = false;
-            this.PositionLabel.Location = new System.Drawing.Point(0, 485);
+            this.PositionLabel.Location = new System.Drawing.Point(0, 484);
             this.PositionLabel.Name = "PositionLabel";
             this.PositionLabel.Size = new System.Drawing.Size(590, 17);
             this.PositionLabel.TextSize = new System.Drawing.Size(207, 13);

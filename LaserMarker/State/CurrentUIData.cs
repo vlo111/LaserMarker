@@ -1,4 +1,6 @@
-﻿namespace LaserMarker.State
+﻿using System.Windows.Forms;
+
+namespace LaserMarker.State
 {
     using System.Drawing;
 
@@ -12,5 +14,7 @@
         public static TextEdit BibText { get; set; }
 
         public static Size RightPanelSize { get; set; }
+
+        public static Panel PanelImages { get; set; }
     }
 }
