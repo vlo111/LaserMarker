@@ -83,7 +83,6 @@
     </Compile>
     <Compile Include="DataAccess\UserDataDto.cs" />
     <Compile Include="DataAccess\UserDataRepository.cs" />
-    <Compile Include="Helper\ControlSearch.cs" />
     <Compile Include="LaserMarker.cs">
       <SubType>Form</SubType>
     </Compile>

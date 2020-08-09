@@ -1,9 +1,9 @@
-﻿using DevExpress.XtraBars.Docking2010.Customization;
+﻿using DevExpress.Utils.Extensions;
+using DevExpress.XtraBars.Docking2010.Customization;
 
 namespace LaserMarker.UserControls
 {
     using BLL;
-
     using System;
     using System.Collections.Generic;
     using System.Drawing;
@@ -11,21 +11,16 @@ namespace LaserMarker.UserControls
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Forms;
-
     using API;
-
     using DevExpress.XtraEditors;
-
     using EzdDataControl;
     using global::LaserMarker.State;
-
     using Newtonsoft.Json;
-
     using Telerik.WinControls.UI;
 
     public partial class SearchCompetitor : Form // : XtraUserControl
     {
-        private CompetitorList _competitors;
+        private Competitors _competitors;
 
         private TextEdit _bib_text;
 
@@ -53,29 +48,14 @@ namespace LaserMarker.UserControls
             CurrentData.Preview.ShowSearch(this.Height);
         }
 
-        private void SearchCompetitor_Load(object sender, EventArgs e)
-        {
-            this.listView1.Columns.AddRange(
-                new ColumnHeader[]
-                    {
-                        new ColumnHeader() { Text = @"Bib", Width = this.listView1.Width / 100 * 20 },
-                        new ColumnHeader() { Text = @"First Name", Width = this.listView1.Width / 100 * 30  },
-                        new ColumnHeader() { Text = @"Last Name", Width = this.listView1.Width / 100 * 30  },
-                        new ColumnHeader() { Text = @"Birth year", Width = this.listView1.Width / 100 * 20  }
-                    });
-        }
-
         private async void searchControl1_TextChanged(object sender, EventArgs e)
         {
-
             var search = this.searchControl.Text;
 
             if (string.IsNullOrEmpty(search))
             {
                 return;
             }
-
-
 
             if (_tokenSource != null)
             {
@@ -86,7 +66,6 @@ namespace LaserMarker.UserControls
 
             try
             {
-
                 this.waitingBar.StartWaiting();
 
                 await loadPrestatieGetCompetitorAsync(this.listView1, _tokenSource.Token, search);
@@ -101,16 +80,16 @@ namespace LaserMarker.UserControls
             await Task.Delay(500, token).ConfigureAwait(true);
             try
             {
-                var task = await Queries.GetRequestAsync($@"http://openeventor.ru/event/{CurrentApiData.Token}/plugins/engraver/get?search={this.searchControl.Text}");
+                var task = await Queries.GetRequestAsync(
+                    $@"http://openeventor.ru/event/{CurrentApiData.Token}/plugins/engraver/get?search={this.searchControl.Text}");
 
-                this._competitors = JsonConvert.DeserializeObject<CompetitorList>(task);
+                this._competitors = JsonConvert.DeserializeObject<Competitors>(task);
 
                 UpdateListView(search);
 
                 this.waitingBar.StopWaiting();
 
                 token.ThrowIfCancellationRequested();
-
             }
             catch (OperationCanceledException ex)
             {
@@ -128,30 +107,46 @@ namespace LaserMarker.UserControls
 
             var listItem = new List<ListViewItem>();
 
-            if (this._competitors.CompetitorDatas == null || this._competitors.CompetitorDatas.Count <= 0)
+            if (this._competitors.CompetitorList == null || this._competitors.CompetitorList.Count <= 0)
             {
                 return;
             }
 
-            var competitors = this._competitors.CompetitorDatas.Where(
-                p => p.LastName != null && p.LastName.ToLower().Contains(search.Trim().ToLower()));
+            var competitors = this._competitors.CompetitorList.Where(
+                list => list.Values
+                    .Any(l => l
+                        .ToLower()
+                        .Contains(search.Trim()
+                            .ToLower())));
 
             var searchedCompetitorList = competitors.ToList();
 
-            SearchCompetitorPreview.UpdateLData(searchedCompetitorList, this.searchControl.Text);
+            // Columns
+            if (this.listView1.Columns.Count <= 0)
+            {
+                ICollection<ColumnHeader> columns = new List<ColumnHeader>();
 
+                searchedCompetitorList.FirstOrDefault()
+                    ?.Keys.ForEach(key =>
+                    {
+                        columns.Add(new ColumnHeader() {Text = key, Width = this.listView1.Width / 100 * 20});
+                    });
+
+                this.listView1.Columns.AddRange(columns.ToArray());
+            }
+
+            //Items
             searchedCompetitorList.ForEach(
-                   p =>
-                   {
-                       listItem.Add(new ListViewItem(new[] { p.Bib, p.FirstName, p.LastName, p.BirthYear }));
-                   });
+                p => { listItem.Add(new ListViewItem(p.Values.ToArray())); });
 
             this.listView1.Items.AddRange(listItem.ToArray());
+
+            SearchCompetitorPreview.UpdateLData(searchedCompetitorList, this.searchControl.Text);
         }
 
         private void KeyBtns_Click(object sender, EventArgs e)
         {
-            var btn = (DevExpress.XtraEditors.SimpleButton)sender;
+            var btn = (DevExpress.XtraEditors.SimpleButton) sender;
 
             if (btn.Text == "<")
             {
@@ -172,20 +167,50 @@ namespace LaserMarker.UserControls
         {
             if (string.IsNullOrEmpty(this.searchControl.Text)
                 || this._competitors == null
-                || this._competitors.CompetitorDatas == null
-                || this._competitors.CompetitorDatas.Count <= 0)
+                || this._competitors.CompetitorList == null
+                || this._competitors.CompetitorList.Count <= 0)
             {
                 return;
             }
 
             if (this.listView1.SelectedItems.Count > 0)
             {
-                var selectedCompotitor = this._competitors.CompetitorDatas.FirstOrDefault(p => p.Bib == this.listView1.SelectedItems[0].Text);
+                // Get bib from listView/API
+                var index = this.listView1.SelectedIndices[0];
 
-                this._bib_text.Text = selectedCompotitor.Bib;
+                int bibIndex = 0;
 
-                CurrentData.EzdImage = ReopositoryEzdFile.UpdateEzdApi(selectedCompotitor, CurrentData.EzdImage.Width, CurrentData.EzdImage.Height);
-                
+                foreach (ColumnHeader column in this.listView1.Columns)
+                {
+                    if (column.Text == @"bib")
+                    {
+                        bibIndex = column.DisplayIndex;
+                    }
+                }
+
+                var currentBib = this.listView1.Items[index].SubItems[bibIndex].Text;
+
+                this._bib_text.Text = currentBib;
+
+                var selectedCompotitor = new Dictionary<string, string>();
+
+                foreach (var dict in this._competitors.CompetitorList)
+                {
+                    foreach (KeyValuePair<string, string> keyValuePair in dict)
+                    {
+                        if (keyValuePair.Key == "bib")
+                        {
+                            if (keyValuePair.Value == currentBib)
+                            {
+                                selectedCompotitor = dict;
+                            }
+                        }
+                    }
+                }
+
+                CurrentData.EzdImage = ReopositoryEzdFile.UpdateEzdApi(selectedCompotitor, CurrentData.EzdImage.Width,
+                    CurrentData.EzdImage.Height);
+
                 CurrentData.EzdPictureBox.Refresh();
             }
 

@@ -3,20 +3,18 @@
 namespace LaserMarker.UserControls
 {
     using API;
-
     using System;
     using System.Collections.Generic;
     using DevExpress.XtraEditors;
     using BLL;
     using System.Windows.Forms;
-
     using System.Linq;
 
-    public partial class SearchCompetitorPreview : Form//: XtraUserControl
+    public partial class SearchCompetitorPreview : Form //: XtraUserControl
     {
-        public static List<CompetitorData> _competitors;
+        public static Competitors _competitors;
 
-        public static List<CompetitorData> _tempCompetitors;
+        public Competitors _tempCompetitors;
 
         public static string _searchText;
 
@@ -25,16 +23,6 @@ namespace LaserMarker.UserControls
         public SearchCompetitorPreview(int height)
         {
             InitializeComponent();
-
-            this.listView11.Columns.AddRange(
-                new ColumnHeader[]
-                    {
-                        new ColumnHeader() { Text = @"Bib", Width = this.listView11.Width / 100 * 20 },
-                        new ColumnHeader() { Text = @"First Name", Width = this.listView11.Width / 100 * 30  },
-                        new ColumnHeader() { Text = @"Last Name", Width = this.listView11.Width / 100 * 30  },
-                        new ColumnHeader() { Text = @"Birth year", Width = this.listView11.Width / 100 * 20  }
-                    });
-
 
             // Get the second monitor screen
             Screen screen = ScreenSize.GetSecondaryScreen();
@@ -62,11 +50,8 @@ namespace LaserMarker.UserControls
         {
             if (_competitors != null)
             {
-                if (_tempCompetitors != null && _tempCompetitors.OrderBy(p => p.Bib).SequenceEqual(_competitors.OrderBy(p => p.Bib)))
-                {
-
-                }
-                else
+                if (_tempCompetitors == null ||
+                    !_tempCompetitors.CompetitorList.SequenceEqual(_competitors.CompetitorList))
                 {
                     if (this.listView11.InvokeRequired)
                     {
@@ -78,15 +63,26 @@ namespace LaserMarker.UserControls
 
                                 var listItem = new List<ListViewItem>();
 
-                                foreach (var competitor in _competitors)
+                                // Columns
+                                if (this.listView11.Columns.Count <= 0)
                                 {
-                                    listItem.Add(new ListViewItem(new[] {
-                                competitor.Bib,
-                                competitor.FirstName,
-                                competitor.LastName,
-                                competitor.BirthYear }));
+                                    ICollection<ColumnHeader> columns = new List<ColumnHeader>();
 
+                                    var dictionary = _competitors.CompetitorList.FirstOrDefault();
+
+                                    if (dictionary != null)
+                                        foreach (var key in dictionary.Keys)
+                                        {
+                                            columns.Add(new ColumnHeader()
+                                                {Text = key, Width = this.listView11.Width / 100 * 20});
+                                        }
+
+                                    this.listView11.Columns.AddRange(columns.ToArray());
                                 }
+
+                                //Items
+                                _competitors.CompetitorList.ForEach(
+                                    p => { listItem.Add(new ListViewItem(p.Values.ToArray())); });
 
                                 this.listView11.Items.AddRange(listItem.ToArray());
                             }
@@ -95,20 +91,26 @@ namespace LaserMarker.UserControls
                             {
                                 this.searchControl.Text = _searchText;
                             }
+
+                            _tempCompetitors = _competitors;
                         }));
                     }
-
                 }
             }
-
-            _tempCompetitors = _competitors;
-
         }
 
-          
-        public static void UpdateLData(List<CompetitorData> searchedCompetitorList, string searchControlText)
+
+        public static void UpdateLData(List<Dictionary<string, string>> searchedCompetitorList,
+            string searchControlText)
         {
-            _competitors = searchedCompetitorList;
+            if (_competitors == null)
+            {
+                _competitors = new Competitors();
+
+                _competitors.CompetitorList = new List<Dictionary<string, string>>();
+            }
+
+            _competitors.CompetitorList = searchedCompetitorList;
 
             _searchText = searchControlText;
         }

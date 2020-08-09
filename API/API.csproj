@@ -41,8 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Competitor.cs" />
-    <Compile Include="CompetitorData.cs" />
-    <Compile Include="CompetitorList.cs" />
+    <Compile Include="Competitors.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="Eventor.cs" />
     <Compile Include="EventorEvent.cs" />

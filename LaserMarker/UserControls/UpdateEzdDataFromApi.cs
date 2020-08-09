@@ -1,4 +1,6 @@
-﻿namespace LaserMarker.UserControls
+﻿using BLL;
+
+namespace LaserMarker.UserControls
 {
     using System;
     using System.Collections.Generic;
@@ -22,8 +24,6 @@
 
     public partial class UpdateEzdDataFromApi : DevExpress.XtraEditors.XtraUserControl
     {
-        private Competitor _competitor;
-
         private LaserMarker _form;
 
         bool doWorkRun = false;
@@ -91,15 +91,17 @@
             try
             {
                 var task = await Queries.GetRequestAsync(
-                  $@"http://openeventor.ru/api/event/{CurrentApiData.Token}/get_competitor/bib/{this.searchTextEdit.Text}");
+                    $@"http://openeventor.ru/api/event/{CurrentApiData.Token}/engraver/get?bib={this.searchTextEdit.Text}");
 
-                this._competitor = JsonConvert.DeserializeObject<Competitor>(task);
+                var competitor = JsonConvert.DeserializeObject<Competitor>(task);
 
                 EZD.LoadImage(CurrentData.EzdName);
 
-                CurrentData.EzdImage = EZD.UpdateEzdApi(_competitor.CompetitorData, CurrentData.EzdImage.Width, CurrentData.EzdImage.Height);
+                CurrentData.EzdImage = EZD.UpdateEzdApi(competitor.CompetitorData, CurrentData.EzdImage.Width, CurrentData.EzdImage.Height);
                
                 CurrentData.EzdPictureBox.Refresh();
+
+                CurrentData.Preview.UpdateImage(CurrentUIData.PanelImages.ToImage());
             }
             catch (Exception)
             {

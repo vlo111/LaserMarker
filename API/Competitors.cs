@@ -5,12 +5,12 @@ namespace API
 {
     using Newtonsoft.Json;
 
-    public class Competitor
+    public class Competitors
     {
         [JsonProperty(PropertyName = "ok")]
         public bool Ok { get; set; }
 
-        [JsonProperty(PropertyName = "competitor")]
-        public Dictionary<string, string> CompetitorData { get; set; }
+        [JsonProperty(PropertyName = "Competitors")]
+        public List<Dictionary<string, string>> CompetitorList { get; set; }
     }
 }

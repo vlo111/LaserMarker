@@ -8,7 +8,6 @@
     using System.Linq;
     using System.Text;
     using System.Windows.Forms;
-    using API;
     using SDK;
     using BLL;
 
@@ -40,7 +39,7 @@
 
                 var value = line.Substring(line.IndexOf("=", StringComparison.Ordinal) + 1,
                     line.Length - line.IndexOf("=", StringComparison.Ordinal) - 1);
-                // .Replace(".", ",");
+                //.Replace(".", ",");
 
                 if (line.Contains("WORKSPACEWIDTH"))
                 {
@@ -149,43 +148,17 @@
             return img;
         }
 
-        public static Image UpdateEzdApi(CompetitorData competitor, int width, int height)
+        public static Image UpdateEzdApi(Dictionary<string, string> competitor, int width, int height)
         {
-            for (int i = 0; i <= 3; i++)
+            string ezdObj;
+
+            for (var i = 0; i < JczLmc.GetEntityCount(); i++)
             {
-                var ezdObj = JczLmc.GetEntityNameByIndex(i);
+                ezdObj = JczLmc.GetEntityNameByIndex(i);
 
-                if (ezdObj.ToLower() == "firstname")
-                {
-                    if (competitor.FirstName != null)
-                    {
-                        JczLmc.ChangeTextByName(ezdObj, competitor.FirstName);
-                    }
-                }
-
-                if (ezdObj.ToLower() == "lastname")
-                {
-                    if (competitor.LastName != null)
-                    {
-                        JczLmc.ChangeTextByName(ezdObj, competitor.LastName);
-                    }
-                }
-
-                if (ezdObj.ToLower() == "timeofdistance")
-                {
-                    if (competitor.TimeOfDistance != null)
-                    {
-                        JczLmc.ChangeTextByName(ezdObj, competitor.TimeOfDistance);
-                    }
-                }
-
-                if (ezdObj.ToLower() == "distance")
-                {
-                    if (competitor.Distance != null)
-                    {
-                        JczLmc.ChangeTextByName(ezdObj, competitor.Distance);
-                    }
-                }
+                JczLmc.ChangeTextByName(ezdObj,
+                    competitor.Keys
+                        .Any(p => p == ezdObj) ? competitor[ezdObj] : "");
             }
 
             var img = GetImagePreview();
