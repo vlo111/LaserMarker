@@ -22,7 +22,7 @@
             }
 
             int period = 10;
-            string keyName = "Network32";
+            string keyName = "Network30";
 
             RegistryKey rootKey = Registry.CurrentUser;
             RegistryKey regKey = rootKey.OpenSubKey(keyName);

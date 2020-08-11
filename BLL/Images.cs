@@ -50,47 +50,38 @@
 
             int height;
 
-            int coefficientH;
-
             int coefficientW;
-
-            var imgWidth = img.Width;
-
-            var imgHeight = img.Height;
 
             // size second screen
             var screenWidth = ScreenSize.GetSecondaryScreen().Bounds.Width;
 
             var screenHeight = ScreenSize.GetSecondaryScreen().Bounds.Height;
 
-            if (imgWidth < screenWidth)
-            {
-                coefficientW = (int)(imgWidth / (double)screenWidth * 100);
+            var imgNewHeight = img.Height;
 
-                width = img.Width + (img.Width * coefficientW / 100);
-                height = img.Height + (img.Height * coefficientW / 100);
+            if (img.Width < screenWidth)
+            {
+                coefficientW = (int)(img.Width / (double)screenWidth * 100);
+
+                width = img.Width + (screenWidth * coefficientW / 100);
+
+                height = imgNewHeight + (screenWidth * coefficientW / 100);
             }
             else
             {
-                coefficientW = (int)(imgWidth / (double)screenWidth * 100);
+                coefficientW = (int)(img.Width / (double)screenWidth * 100);
 
-                width = img.Width - (img.Width * coefficientW / 100);
-                height = img.Height - (img.Height * coefficientW / 100);
+                width = img.Width - (screenWidth * coefficientW / 100);
+
+                height = imgNewHeight - (screenHeight * coefficientW / 100);
             }
 
-            if (imgHeight < screenHeight)
+            if (height > screenHeight)
             {
-                coefficientH = (int)(imgHeight / (double)screenHeight * 100);
+                var reduce = (int)((double)screenHeight / (double)height * 100d);
 
-                width = img.Width + (img.Width * coefficientH / 100);
-                height = img.Height + (img.Height * coefficientH / 100);
-            }
-            else
-            {
-                coefficientH = (int)(imgHeight / (double)screenHeight * 100);
-
-                width = img.Width + (img.Width * coefficientH / 100);
-                height = img.Height + (img.Height * coefficientH / 100);
+                width = width * reduce / 100;
+                height = height * reduce / 100;
             }
 
             Bitmap bmp = new Bitmap(img, width, height);

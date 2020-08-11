@@ -13,7 +13,9 @@
 
     public static class ReopositoryEzdFile
     {
-        private static readonly int ezdWidth;
+        public static bool AutoWidthEzd { get; set; }
+
+        private static readonly int EzdWidth;
 
         private static readonly int Eheight;
 
@@ -27,6 +29,12 @@
 
         private static readonly string EshowWorkSpace;
 
+        public enum ModeFontSize
+        {
+            Reduce,
+            Zoom
+        }
+
         static ReopositoryEzdFile()
         {
             var filePath = Application.StartupPath + @"\EZCAD.CFG";
@@ -38,12 +46,11 @@
                 var line = lines[i];
 
                 var value = line.Substring(line.IndexOf("=", StringComparison.Ordinal) + 1,
-                    line.Length - line.IndexOf("=", StringComparison.Ordinal) - 1);
-                //.Replace(".", ",");
+                    line.Length - line.IndexOf("=", StringComparison.Ordinal) - 1);//.Replace(".", ",");
 
                 if (line.Contains("WORKSPACEWIDTH"))
                 {
-                    ezdWidth = int.Parse(value, System.Globalization.NumberStyles.Any);
+                    EzdWidth = int.Parse(value, System.Globalization.NumberStyles.Any);
                 }
                 else if (line.Contains("WORKSPACEHEIGHT"))
                 {
@@ -63,7 +70,7 @@
                     lines[i] = $@"SHOWWORKSPACE={EshowWorkSpace}";
                 }
 
-                if (ezdWidth > 0 && Eheight > 0 && Ex > 0 && Ey > 0
+                if (EzdWidth > 0 && Eheight > 0 && Ex > 0 && Ey > 0
                     && !string.IsNullOrEmpty(EshowWorkSpace))
                 {
                     break;
@@ -72,9 +79,9 @@
 
             File.WriteAllLines(filePath, lines);
 
-            Escale = 1d / (ScreenSize.PrimaryWidth() / (double) ezdWidth);
+            Escale = 1d / (ScreenSize.PrimaryWidth() / (double) EzdWidth);
 
-            EheightForGetPrev = (int) ((ScreenSize.PrimaryWidth() / (double) ezdWidth) * (double) Eheight);
+            EheightForGetPrev = (int) ((ScreenSize.PrimaryWidth() / (double) EzdWidth) * (double) Eheight);
         }
 
         public static string Initialize(string path, bool mode)
@@ -139,7 +146,7 @@
             return ezdObjects;
         }
 
-        public static Image UpdateCustomEzd(Tuple<string, string> ezdObj, int width, int height)
+        public static Image UpdateCustomEzd(Tuple<string, string> ezdObj)
         {
             JczLmc.ChangeTextByName(ezdObj.Item1, ezdObj.Item2);
 
@@ -148,22 +155,73 @@
             return img;
         }
 
-        public static Image UpdateEzdApi(Dictionary<string, string> competitor, int width, int height)
+        public static Image UpdateEzdApi(Dictionary<string, string> competitor)
         {
             string ezdObj;
 
-            for (var i = 0; i < JczLmc.GetEntityCount(); i++)
+            var entCount = JczLmc.GetEntityCount();
+
+            for (var i = 0; i < entCount; i++)
             {
                 ezdObj = JczLmc.GetEntityNameByIndex(i);
 
-                JczLmc.ChangeTextByName(ezdObj,
-                    competitor.Keys
-                        .Any(p => p == ezdObj) ? competitor[ezdObj] : "");
+                if (competitor.Keys.Any(p => p == ezdObj))
+                {
+                    if (AutoWidthEzd)
+                    {
+                        UpdateEzdWithResize(competitor, ezdObj);
+                    }
+                    else
+                    {
+                        JczLmc.ChangeTextByName(ezdObj, competitor[ezdObj]);
+                    }
+                }
+                else
+                {
+                    JczLmc.ChangeTextByName(ezdObj, "");
+                }
             }
 
             var img = GetImagePreview();
 
             return img;
+        }
+
+        private static void UpdateEzdWithResize(Dictionary<string, string> competitor, string ezdObj)
+        {
+            double minx = 0;
+            double miny = 0;
+
+            double maxx = 0;
+            double maxy = 0;
+
+            double dz = 0;
+
+
+            double minx1 = 0;
+            double miny1 = 0;
+
+            double maxx1 = 0;
+            double maxy1 = 0;
+
+            double dz1 = 0;
+            JczLmc.GetEntSize(ezdObj, ref minx, ref miny, ref maxx, ref maxy, ref dz);
+
+            JczLmc.ChangeTextByName(ezdObj, competitor[ezdObj]);
+
+            JczLmc.GetEntSize(ezdObj, ref minx1, ref miny1, ref maxx1, ref maxy1, ref dz1);
+
+
+            if ((maxx - minx) < (maxx1 - minx1))
+            {
+                var font = new FontEzd();
+
+                font.InitialData(ezdObj);
+
+                font.width_ezd = font.width_ezd * ((maxx - minx) / (maxx1 - minx1));
+
+                font.UpdateData(ezdObj);
+            }
         }
 
         public static Image LoadAndGetImage(string fileName)
@@ -173,61 +231,24 @@
             return GetImagePreview();
         }
 
-        public static Image FontSize(string entName, ModeFontSize mode, int width, int heght)
+        public static Image FontSize(string entName, ModeFontSize mode)
         {
-            StringBuilder font = new StringBuilder();
-            double height_ezd = 0;
-            double width_ezd = 0;
-            double angle = 0;
-            double space = 0;
-            double line_space = 0;
-            bool bBold = false;
-            int nTextAlign = 0;
-            bool bItalic = false;
+            var font = new FontEzd();
 
-            int nTextSpaceMode = 0;
-            double dTextSpace = 0;
-            double dNullCharWidthRatio = 0;
-
-            int errGetText = JczLmc.GetTextEntParam4(entName,
-                font,
-                ref nTextSpaceMode,
-                ref dTextSpace,
-                ref height_ezd,
-                ref width_ezd,
-                ref angle,
-                ref space,
-                ref line_space,
-                ref dNullCharWidthRatio,
-                ref nTextAlign,
-                ref bBold,
-                ref bItalic);
+            font.InitialData(entName);
 
             if (mode == ModeFontSize.Reduce)
             {
-                height_ezd = height_ezd - 0.0052d;
-                width_ezd = width_ezd - 0.0052d;
+                font.height_ezd = font.height_ezd - 0.0052d;
+                font.width_ezd = font.width_ezd - 0.0052d;
             }
             else
             {
-                height_ezd = height_ezd + 0.0052d;
-                width_ezd = width_ezd + 0.0052d;
+                font.height_ezd = font.height_ezd + 0.0052d;
+                font.width_ezd = font.width_ezd + 0.0052d;
             }
 
-
-            int errSetText = JczLmc.SetTextEntParam4(entName,
-                font.ToString(),
-                nTextSpaceMode,
-                dTextSpace,
-                height_ezd,
-                width_ezd,
-                angle,
-                space,
-                line_space,
-                dNullCharWidthRatio,
-                nTextAlign,
-                bBold,
-                bItalic);
+            font.UpdateData(entName);
 
             return GetImagePreview();
         }
@@ -269,10 +290,22 @@
             int nErr = JczLmc.RedMark();
         }
 
-        public enum ModeFontSize
+        public static bool CheckSameEntName()
         {
-            Reduce,
-            Zoom
+            string ezdObj;
+
+            var entCount = JczLmc.GetEntityCount();
+
+            var listEntName = new List<string>();
+
+            for (var i = 0; i < entCount; i++)
+            {
+                ezdObj = JczLmc.GetEntityNameByIndex(i);
+
+                listEntName.Add(ezdObj);
+            }
+
+            return listEntName.Distinct().Count() != listEntName.Count;
         }
     }
 }

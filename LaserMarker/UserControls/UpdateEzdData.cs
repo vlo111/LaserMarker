@@ -197,9 +197,7 @@
         {
             var img = ReopositoryEzdFile.FontSize(
                 _competitor[index].Item1,
-                mode,
-                CurrentData.EzdImage.Width,
-                CurrentData.EzdImage.Height);
+                mode);
 
             CurrentData.EzdImage = Images.MakeImageTransparent(img);
 
@@ -301,13 +299,13 @@
 
                 var comp = new Tuple<string, string>(text.Properties.NullText, text.Text);
 
-                CurrentData.EzdImage = ReopositoryEzdFile.UpdateCustomEzd(comp, CurrentData.EzdImage.Width, CurrentData.EzdImage.Height);
+                CurrentData.EzdImage = ReopositoryEzdFile.UpdateCustomEzd(comp);
                 
                 CurrentData.EzdPictureBox.Refresh();
             }
             catch (Exception)
             {
-                XtraMessageBox.Show(@"Данные с этим номером не найдены", "Information", MessageBoxButtons.OK);
+                XtraMessageBox.Show(@"Данные с этим номером не найдены", "Информация", MessageBoxButtons.OK);
             }
         }
 
@@ -338,7 +336,7 @@
                     }
                     else
                     {
-                        XtraMessageBox.Show("Гравировка уже идет", "Information", MessageBoxButtons.OK);
+                        XtraMessageBox.Show("Гравировка уже идет", "Информация", MessageBoxButtons.OK);
                     }
                 }
             }
@@ -443,7 +441,7 @@
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show(ex.Message, "Information", MessageBoxButtons.OK);
+                XtraMessageBox.Show(ex.Message, "Информация", MessageBoxButtons.OK);
             }
         }
 

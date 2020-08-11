@@ -45,7 +45,7 @@ namespace LaserMarker.UserControls
 
             this.layoutControl2.Controls.Add(waitingBar);
 
-            CurrentData.Preview.ShowSearch(this.Height);
+            CurrentData.Preview?.ShowSearch(this.Height);
         }
 
         private async void searchControl1_TextChanged(object sender, EventArgs e)
@@ -208,15 +208,14 @@ namespace LaserMarker.UserControls
                     }
                 }
 
-                CurrentData.EzdImage = ReopositoryEzdFile.UpdateEzdApi(selectedCompotitor, CurrentData.EzdImage.Width,
-                    CurrentData.EzdImage.Height);
+                CurrentData.EzdImage = ReopositoryEzdFile.UpdateEzdApi(selectedCompotitor);
 
                 CurrentData.EzdPictureBox.Refresh();
             }
 
             CloseSearch();
 
-            CurrentData.Preview.UpdateImage(CurrentUIData.PanelImages.ToImage());
+            CurrentData.Preview?.UpdateImage(CurrentUIData.PanelImages.ToImage());
         }
 
         private void simpleButton12_Click(object sender, EventArgs e)
@@ -226,7 +225,7 @@ namespace LaserMarker.UserControls
 
         private void CloseSearch()
         {
-            CurrentData.Preview.CloseSearch();
+            CurrentData.Preview?.CloseSearch();
 
             this.Close();
         }

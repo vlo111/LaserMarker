@@ -78,7 +78,10 @@ namespace LaserMarker.UserControls
 
             if (btn.Text == "C")
             {
-                searchTextEdit.Text = searchTextEdit.Text.Remove(searchTextEdit.Text.Length - 1);
+                if (!string.IsNullOrEmpty(searchTextEdit.Text))
+                {
+                    searchTextEdit.Text = searchTextEdit.Text.Remove(searchTextEdit.Text.Length - 1);
+                }
             }
             else
             {
@@ -97,11 +100,11 @@ namespace LaserMarker.UserControls
 
                 EZD.LoadImage(CurrentData.EzdName);
 
-                CurrentData.EzdImage = EZD.UpdateEzdApi(competitor.CompetitorData, CurrentData.EzdImage.Width, CurrentData.EzdImage.Height);
+                CurrentData.EzdImage = EZD.UpdateEzdApi(competitor.CompetitorData);
                
                 CurrentData.EzdPictureBox.Refresh();
 
-                CurrentData.Preview.UpdateImage(CurrentUIData.PanelImages.ToImage());
+                CurrentData.Preview?.UpdateImage(CurrentUIData.PanelImages.ToImage());
             }
             catch (Exception)
             {
@@ -136,6 +139,8 @@ namespace LaserMarker.UserControls
             {
                 if (XtraMessageBox.Show("Вы действительно хотите гравировать?", "Сообщения", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
+                    this.searchTextEdit.Text = "";
+
                     doWorkRun = true;
 
                     if (!runBackgroundWorker.IsBusy)

@@ -38,15 +38,18 @@ namespace LaserMarker
 
         private Point _bg_mouseDown;
 
-        private int _bgStartx; // offset of image when mouse was pressed
+        // offset of image when mouse was pressed
+        private int _bgStartx; 
 
         private int _bgStarty;
 
-        private int _bgImgx; // current offset of image
+        // current offset of image
+        private int _bgImgx;
 
         private int _bgImgy;
 
-        private bool _bgMousepressed; // true as long as left mousebutton is pressed
+        // true as long as left mousebutton is pressed
+        private bool _bgMousepressed; 
 
         private float _bgZoom;
 
@@ -129,6 +132,8 @@ namespace LaserMarker
 
                 CurrentUIData.PanelImages = this.panel1;
 
+                EZD.AutoWidthEzd = false;
+
                 CurrentData.EzdPictureBox = this.foregroundPictureBox;
 
                 // Connect sdk
@@ -136,7 +141,7 @@ namespace LaserMarker
 
                 if (!string.IsNullOrEmpty(errMessage))
                 {
-                    XtraMessageBox.Show(errMessage, @"Error", MessageBoxButtons.OK);
+                    XtraMessageBox.Show(errMessage, @"Ошибка", MessageBoxButtons.OK);
                 }
 
                 var userDataDtos = UserDataRepository.GetAllUser();
@@ -151,17 +156,19 @@ namespace LaserMarker
 
                     if (currentData != null)
                     {
-                        this.InitialCurrentDataFromUser(currentData);
-
                         this.CreateBgPictureBoxImage();
 
                         this.CreateEzdPictureBoxImage();
+
+                        this.InitialCurrentDataFromUser(currentData);
                     }
+
                 }
+
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show(ex.Message, @"Error", MessageBoxButtons.OK);
+                XtraMessageBox.Show(ex.Message, @"Ошибка", MessageBoxButtons.OK);
             }
         }
 
@@ -242,7 +249,7 @@ namespace LaserMarker
             {
                 XtraMessageBox.Show(
                     @"Проверте логин/пароль или нет доступ к апи, проверьте интернет соединения",
-                    "Error",
+                    "Ошибка",
                     MessageBoxButtons.OK);
 
                 if (CurrentData.EzdImage != null)
@@ -264,6 +271,10 @@ namespace LaserMarker
             {
                 try
                 {
+                    this.bgCheckBox.Checked = false;
+
+                    this.fgCheckBox.Checked = false;
+
                     if (!string.IsNullOrEmpty(CurrentApiData.Token))
                     {
                         new UpdateEzdDataFromApi(this);
@@ -277,12 +288,12 @@ namespace LaserMarker
                 }
                 catch (Exception ex)
                 {
-                    XtraMessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK);
+                    XtraMessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK);
                 }
             }
             else
             {
-                XtraMessageBox.Show(@"Пожалуйста, выберите ezd файл", "Error", MessageBoxButtons.OK);
+                XtraMessageBox.Show(@"Пожалуйста, выберите ezd файл", @"Ошибка", MessageBoxButtons.OK);
             }
         }
 
@@ -513,8 +524,8 @@ namespace LaserMarker
             e.Graphics.ScaleTransform(this._fgZoom, this._fgZoom);
             e.Graphics.DrawImage(CurrentData.EzdImage, this._fgImgx, this._fgImgy);
 
-            this.PositionLabel.Text =
-                $@"ezd X - {this._fgImgx}, Y - {this._fgImgy} | bg X - {this._bgImgx}, Y - {this._bgImgy}";
+            //this.PositionLabel.Text =
+            //    $@"ezd X - {this._fgImgx}, Y - {this._fgImgy} | bg X - {this._bgImgx}, Y - {this._bgImgy}";
         }
 
         private void BackgroundImageBox_Paint(object sender, PaintEventArgs e)
@@ -535,12 +546,38 @@ namespace LaserMarker
 
         private void MunisBtn_Click(object sender, EventArgs e)
         {
-            this.Scale(e, ScaleMode.Minus);
+            //if (this.bgCheckBox.Checked)
+            //{
+            //    this._bgZoom -= this._bgZoom / 100f * 5f;
+
+            //    this.backgroundPictureBox.Refresh();
+            //}
+
+            //if (this.fgCheckBox.Checked)
+            //{
+            //    this._fgZoom -= this._fgZoom / 100f * 5f;
+
+            //    this.foregroundPictureBox.Refresh();
+            //}
+            Scale(e, ScaleMode.Minus);
         }
 
         private void PlusBtn_Click(object sender, EventArgs e)
         {
-            this.Scale(e, ScaleMode.Plus);
+            //if (this.bgCheckBox.Checked)
+            //{
+            //    this._bgZoom += this._bgZoom / 100f * 5f;
+
+            //    this.backgroundPictureBox.Refresh();
+            //}
+
+            //if (this.fgCheckBox.Checked)
+            //{
+            //    this._fgZoom += this._fgZoom / 100f * 5f;
+
+            //    this.foregroundPictureBox.Refresh();
+            //}
+            Scale(e, ScaleMode.Plus);
         }
 
         #endregion Minus/Plus Event
@@ -561,6 +598,7 @@ namespace LaserMarker
             int oldimagey;
             int newimagex;
             int newimagey;
+
             if (this.bgCheckBox.Checked)
             {
                 oldzoom = this._bgZoom;
@@ -578,7 +616,7 @@ namespace LaserMarker
                 }
 
                 // Where location of the mouse in the pictureframe
-                x = mousePosNow.X - this.backgroundPictureBox.Location.X;
+                x = mousePosNow.X - backgroundPictureBox.Location.X;
                 y = mousePosNow.Y - this.backgroundPictureBox.Location.Y;
 
                 // Where in the IMAGE is it now
@@ -592,6 +630,8 @@ namespace LaserMarker
                 // Where to move image to keep focus on one point
                 this._bgImgx = newimagex - oldimagex + this._bgImgx;
                 this._bgImgy = newimagey - oldimagey + this._bgImgy;
+
+                PositionLabel.Text = "b SX: " + this._bgStartx+ " _ b SY: " + this._bgStarty + " " + "b X: " + this._bgImgx + " _ b Y: " + this._bgImgy + " " + mousePosNow.ToString();
 
                 // calls imageBox_Paint
                 this.backgroundPictureBox.Refresh();
@@ -672,6 +712,11 @@ namespace LaserMarker
                             CurrentData.EzdImage = EZD.LoadAndGetImage(
                                 ofd.FileName);
 
+                            if (EZD.CheckSameEntName())
+                            {
+                                    XtraMessageBox.Show(@"В файле существует одноименный поля. Автоподстройка будет работать для одного из этих полей", @"Предупреждение", MessageBoxButtons.OK);
+                            }
+
                             CurrentData.EzdName = ofd.FileName;
 
                             this.CreateEzdPictureBoxImage();
@@ -699,7 +744,7 @@ namespace LaserMarker
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK);
+                XtraMessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK);
             }
         }
 
@@ -873,13 +918,17 @@ namespace LaserMarker
             // bg
             if (!File.Exists(currentData.BgImageName))
             {
-                XtraMessageBox.Show(@"Подложка не найдено", "Error", MessageBoxButtons.OK);
+                XtraMessageBox.Show(@"Подложка не найдено", "Ошибка", MessageBoxButtons.OK);
             }
             else
             {
                 CurrentData.BgImage = Image.FromFile(currentData.BgImageName);
 
                 CurrentData.BgName = currentData.BgImageName;
+
+                //this._bgStartx = (int)currentData.BgImagePosStartX;
+
+                //this._bgStarty = (int)currentData.BgImagePosStartY;
 
                 this._bgImgx = (int) currentData.BgImagePosX;
 
@@ -891,7 +940,7 @@ namespace LaserMarker
             // Ezd
             if (!File.Exists(currentData.EzdImageName))
             {
-                XtraMessageBox.Show(@"Ezd файл не найдено", "Error", MessageBoxButtons.OK);
+                XtraMessageBox.Show(@"Ezd файл не найдено", @"Ошибка", MessageBoxButtons.OK);
             }
             else
             {
@@ -899,6 +948,10 @@ namespace LaserMarker
                     currentData.EzdImageName);
 
                 CurrentData.EzdName = currentData.EzdImageName;
+
+                //this._fgStartx = (int)currentData.EzdImagePosStartX;
+
+                //this._fgStarty = (int)currentData.EzdImagePosStartY;
 
                 this._fgImgx = (int) currentData.EzdImagePosX;
 
@@ -951,6 +1004,11 @@ namespace LaserMarker
             {
                 Application.Exit();
             }
+        }
+
+        private void autoWidthEzdCB_CheckedChanged(object sender, EventArgs e)
+        {
+            EZD.AutoWidthEzd = this.autoWidthEzdCB.Checked;
         }
     }
 }

@@ -26,7 +26,7 @@ namespace LaserMarker
 
             if (screen != null)
             {
-                // Important !
+                // Important
                 this.StartPosition = FormStartPosition.CenterScreen;
 
                 // set the location to the top left of the second screen

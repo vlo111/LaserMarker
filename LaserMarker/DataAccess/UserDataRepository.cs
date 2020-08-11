@@ -41,9 +41,13 @@
 , [BgImageScale] real NOT NULL
 , [BgImagePosX] bigint NOT NULL
 , [BgImagePosY] bigint NOT NULL
+, [BgImagePosStartX] bigint NOT NULL
+, [BgImagePosStartY] bigint NOT NULL
 , [EzdImageScale] real NOT NULL
 , [EzdImagePosX] bigint NOT NULL
 , [EzdImagePosY] bigint NOT NULL
+, [EzdImagePosStartX] bigint NOT NULL
+, [EzdImagePosStartY] bigint NOT NULL
 );
 CREATE UNIQUE INDEX IF NOT EXISTS [UserData_UserData_UserData_UserData_UserData_sqlite_autoindex_UserData_1] ON [UserData] ([Id] ASC);";
 
@@ -67,16 +71,36 @@ WHERE Sequence = {user.Sequence} and EXISTS (select * from [UserData] where Sequ
                 command.ExecuteNonQuery();
 
                 command.CommandText = $@"INSERT INTO [UserData]
-([Token], [BgImageScale], [BgImagePosX], [BgImagePosY], [EzdImageScale], [EzdImagePosX], [EzdImagePosY], 
-[Sequence], [Login], [Password], [Url], [FullImage], 
-[FullImageName], [BgImageName], [EzdImageName])
+([Token],
+[BgImageScale],
+[BgImagePosX],
+[BgImagePosY],
+[BgImagePosStartX],
+[BgImagePosStartY],
+[EzdImageScale],
+[EzdImagePosX],
+[EzdImagePosY],
+[EzdImagePosStartX],
+[EzdImagePosStartY], 
+[Sequence],
+[Login],
+[Password],
+[Url],
+[FullImage], 
+[FullImageName],
+[BgImageName],
+[EzdImageName])
 VALUES ('{user.Token}'
 ,{user.BgImageScale.ToString(new CultureInfo("en-US"))}
 ,{user.BgImagePosX}
 ,{user.BgImagePosY}
+,{user.BgImagePosStartX}
+,{user.BgImagePosStartY}
 ,{user.EzdImageScale.ToString(new CultureInfo("en-US"))}
 ,{user.EzdImagePosX}
 ,{user.EzdImagePosY}
+,{user.EzdImagePosStartX}
+,{user.EzdImagePosStartY}
 ,{user.Sequence},
 '{user.Login}',
 '{user.Password}', 
@@ -114,24 +138,28 @@ VALUES ('{user.Token}'
                         {
                             user.Add(
                                 new UserDataDto
-                                    {
-                                        Id = (long)reader["Id"],
-                                        Token = (string)reader["Token"],
-                                        Login = (string)reader["Login"],
-                                        Password = (string)reader["Password"],
-                                        UrlSport = (string)reader["Url"],
-                                        FullImage = (byte[])reader["FullImage"],
-                                        FullImageName = (string)reader["FullImageName"],
-                                        BgImageName = (string)reader["BgImageName"],
-                                        EzdImageName = (string)reader["EzdImageName"],
-                                        Sequence = (long)reader["Sequence"],
-                                        BgImagePosX = (long)reader["BgImagePosX"],
-                                        BgImagePosY = (long)reader["BgImagePosY"],
-                                        BgImageScale = (double)reader["BgImageScale"],
-                                        EzdImageScale = (double)reader["EzdImageScale"],
-                                        EzdImagePosX = (long)reader["EzdImagePosX"],
-                                        EzdImagePosY = (long)reader["EzdImagePosY"],
-                                    });
+                                {
+                                    Id = (long) reader["Id"],
+                                    Token = (string) reader["Token"],
+                                    Login = (string) reader["Login"],
+                                    Password = (string) reader["Password"],
+                                    UrlSport = (string) reader["Url"],
+                                    FullImage = (byte[]) reader["FullImage"],
+                                    FullImageName = (string) reader["FullImageName"],
+                                    BgImageName = (string) reader["BgImageName"],
+                                    EzdImageName = (string) reader["EzdImageName"],
+                                    Sequence = (long) reader["Sequence"],
+                                    BgImagePosX = (long) reader["BgImagePosX"],
+                                    BgImagePosY = (long) reader["BgImagePosY"],
+                                    BgImagePosStartX = (long) reader["BgImagePosX"],
+                                    BgImagePosStartY = (long) reader["BgImagePosY"],
+                                    BgImageScale = (double) reader["BgImageScale"],
+                                    EzdImageScale = (double) reader["EzdImageScale"],
+                                    EzdImagePosX = (long) reader["EzdImagePosX"],
+                                    EzdImagePosY = (long) reader["EzdImagePosY"],
+                                    EzdImagePosStartX = (long) reader["EzdImagePosStartX"],
+                                    EzdImagePosStartY = (long) reader["EzdImagePosStartY"],
+                                });
                         }
                     }
                 }
@@ -162,24 +190,28 @@ VALUES ('{user.Token}'
                         while (reader.Read())
                         {
                             user = new UserDataDto
-                                       {
-                                           Id = (long)reader["Id"],
-                                           Token = (string)reader["Token"],
-                                           Login = (string)reader["Login"],
-                                           Password = (string)reader["Password"],
-                                           UrlSport = (string)reader["Url"],
-                                           FullImage = (byte[])reader["FullImage"],
-                                           FullImageName = (string)reader["FullImageName"],
-                                           BgImageName = (string)reader["BgImageName"],
-                                           EzdImageName = (string)reader["EzdImageName"],
-                                           Sequence = (long)reader["Sequence"],
-                                           BgImagePosX = (long)reader["BgImagePosX"],
-                                           BgImagePosY = (long)reader["BgImagePosY"],
-                                           BgImageScale = (double)reader["BgImageScale"],
-                                           EzdImageScale = (double)reader["EzdImageScale"],
-                                           EzdImagePosX = (long)reader["EzdImagePosX"],
-                                           EzdImagePosY = (long)reader["EzdImagePosY"],
-                                       };
+                            {
+                                Id = (long) reader["Id"],
+                                Token = (string) reader["Token"],
+                                Login = (string) reader["Login"],
+                                Password = (string) reader["Password"],
+                                UrlSport = (string) reader["Url"],
+                                FullImage = (byte[]) reader["FullImage"],
+                                FullImageName = (string) reader["FullImageName"],
+                                BgImageName = (string) reader["BgImageName"],
+                                EzdImageName = (string) reader["EzdImageName"],
+                                Sequence = (long) reader["Sequence"],
+                                BgImagePosX = (long) reader["BgImagePosX"],
+                                BgImagePosY = (long) reader["BgImagePosY"],
+                                BgImagePosStartX = (long) reader["BgImagePosStartX"],
+                                BgImagePosStartY = (long) reader["BgImagePosStartY"],
+                                BgImageScale = (double) reader["BgImageScale"],
+                                EzdImageScale = (double) reader["EzdImageScale"],
+                                EzdImagePosX = (long) reader["EzdImagePosX"],
+                                EzdImagePosY = (long) reader["EzdImagePosY"],
+                                EzdImagePosStartX = (long) reader["EzdImagePosStartX"],
+                                EzdImagePosStartY = (long) reader["EzdImagePosStartY"],
+                            };
                         }
                     }
                 }
@@ -209,7 +241,7 @@ VALUES ('{user.Token}'
                     {
                         while (reader.Read())
                         {
-                            ifExist = (long)reader[0];
+                            ifExist = (long) reader[0];
                         }
                     }
                 }
@@ -219,7 +251,7 @@ VALUES ('{user.Token}'
                 throw e;
             }
 
-            return (byte)ifExist;
+            return (byte) ifExist;
         }
 
         public static void DeleteByTabIndex(long index)
