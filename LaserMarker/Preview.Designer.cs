@@ -28,82 +28,68 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.pictureEdit1 = new DevExpress.XtraEditors.PictureEdit();
-            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
-            this.layoutControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.foregroundPictureBox = new System.Windows.Forms.PictureBox();
+            this.backgroundPictureBox = new DevExpress.XtraEditors.PictureEdit();
+            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.foregroundPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.backgroundPictureBox.Properties)).BeginInit();
             this.SuspendLayout();
             // 
-            // layoutControl1
+            // panel1
             // 
-            this.layoutControl1.Controls.Add(this.pictureEdit1);
-            this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.layoutControl1.Location = new System.Drawing.Point(0, 0);
-            this.layoutControl1.Name = "layoutControl1";
-            this.layoutControl1.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(1658, 272, 650, 400);
-            this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(929, 542);
-            this.layoutControl1.TabIndex = 0;
-            this.layoutControl1.Text = "layoutControl1";
+            this.panel1.Controls.Add(this.foregroundPictureBox);
+            this.panel1.Controls.Add(this.backgroundPictureBox);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(929, 542);
+            this.panel1.TabIndex = 1;
             // 
-            // pictureEdit1
+            // foregroundPictureBox
             // 
-            this.pictureEdit1.Location = new System.Drawing.Point(2, 2);
-            this.pictureEdit1.Name = "pictureEdit1";
-            this.pictureEdit1.Properties.ShowCameraMenuItem = DevExpress.XtraEditors.Controls.CameraMenuItemVisibility.Auto;
-            this.pictureEdit1.Size = new System.Drawing.Size(925, 538);
-            this.pictureEdit1.StyleController = this.layoutControl1;
-            this.pictureEdit1.TabIndex = 5;
+            this.foregroundPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.foregroundPictureBox.BackColor = System.Drawing.Color.Transparent;
+            this.foregroundPictureBox.Location = new System.Drawing.Point(0, 0);
+            this.foregroundPictureBox.Name = "foregroundPictureBox";
+            this.foregroundPictureBox.Size = new System.Drawing.Size(929, 542);
+            this.foregroundPictureBox.TabIndex = 7;
+            this.foregroundPictureBox.TabStop = false;
             // 
-            // Root
+            // backgroundPictureBox
             // 
-            this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
-            this.Root.GroupBordersVisible = false;
-            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem2});
-            this.Root.Name = "Root";
-            this.Root.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
-            this.Root.Size = new System.Drawing.Size(929, 542);
-            this.Root.TextVisible = false;
-            // 
-            // layoutControlItem2
-            // 
-            this.layoutControlItem2.Control = this.pictureEdit1;
-            this.layoutControlItem2.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Size = new System.Drawing.Size(929, 542);
-            this.layoutControlItem2.TextSize = new System.Drawing.Size(0, 0);
-            this.layoutControlItem2.TextVisible = false;
+            this.backgroundPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.backgroundPictureBox.Location = new System.Drawing.Point(0, 0);
+            this.backgroundPictureBox.Name = "backgroundPictureBox";
+            this.backgroundPictureBox.Properties.ShowCameraMenuItem = DevExpress.XtraEditors.Controls.CameraMenuItemVisibility.Auto;
+            this.backgroundPictureBox.Size = new System.Drawing.Size(929, 542);
+            this.backgroundPictureBox.TabIndex = 6;
             // 
             // Preview
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(929, 542);
-            this.Controls.Add(this.layoutControl1);
+            this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Preview";
             this.Text = "Preview";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
-            this.layoutControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
+            this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.foregroundPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.backgroundPictureBox.Properties)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private DevExpress.XtraLayout.LayoutControl layoutControl1;
-        private DevExpress.XtraLayout.LayoutControlGroup Root;
-        private DevExpress.XtraEditors.PictureEdit pictureEdit1;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.PictureBox foregroundPictureBox;
+        private DevExpress.XtraEditors.PictureEdit backgroundPictureBox;
     }
 }

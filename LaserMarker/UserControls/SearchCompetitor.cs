@@ -52,52 +52,62 @@ namespace LaserMarker.UserControls
         {
             var search = this.searchControl.Text;
 
-            if (string.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(this.searchControl.Text))
             {
-                return;
-            }
+                if (string.IsNullOrEmpty(search))
+                {
+                    return;
+                }
 
-            if (_tokenSource != null)
-            {
-                _tokenSource.Cancel();
-            }
+                if (_tokenSource != null)
+                {
+                    _tokenSource.Cancel();
+                }
 
-            _tokenSource = new CancellationTokenSource();
+                _tokenSource = new CancellationTokenSource();
 
-            try
-            {
-                this.waitingBar.StartWaiting();
+                try
+                {
+                    this.waitingBar.StartWaiting();
 
-                await loadPrestatieGetCompetitorAsync(this.listView1, _tokenSource.Token, search);
-            }
-            catch (OperationCanceledException)
-            {
+                    await loadPrestatieGetCompetitorAsync(this.listView1, _tokenSource.Token, search);
+                }
+                catch (OperationCanceledException)
+                {
+                }
             }
         }
 
         private async Task loadPrestatieGetCompetitorAsync(ListView list, CancellationToken token, string search)
         {
-            await Task.Delay(500, token).ConfigureAwait(true);
-            try
+            if (!string.IsNullOrEmpty(search))
             {
-                var task = await Queries.GetRequestAsync(
-                    $@"http://openeventor.ru/event/{CurrentApiData.Token}/plugins/engraver/get?search={this.searchControl.Text}");
+                await Task.Delay(500, token).ConfigureAwait(true);
+                try
+                {
+                    var task = await Queries.GetRequestAsync(
+                        $@"http://openeventor.ru/event/{CurrentApiData.Token}/plugins/engraver/get?search={this.searchControl.Text}");
 
-                this._competitors = JsonConvert.DeserializeObject<Competitors>(task);
+                    if (task == null)
+                    {
+                        return;
+                    }
+                    this._competitors = JsonConvert.DeserializeObject<Competitors>(task);
 
-                UpdateListView(search);
+                    UpdateListView(search);
 
-                this.waitingBar.StopWaiting();
+                    this.waitingBar.StopWaiting();
 
-                token.ThrowIfCancellationRequested();
-            }
-            catch (OperationCanceledException ex)
-            {
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                    token.ThrowIfCancellationRequested();
+                }
+                catch (OperationCanceledException ex)
+                {
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
             }
         }
 

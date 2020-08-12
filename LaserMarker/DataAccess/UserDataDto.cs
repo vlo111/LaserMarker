@@ -24,10 +24,6 @@
 
         public double BgImageScale { get; set; }
 
-        public long BgImagePosStartX { get; set; }
-
-        public long BgImagePosStartY { get; set; }
-
         public long BgImagePosX { get; set; }
 
         public long BgImagePosY { get; set; }
@@ -37,10 +33,6 @@
         public long EzdImagePosX { get; set; }
 
         public long EzdImagePosY { get; set; }
-
-        public long EzdImagePosStartX { get; set; }
-
-        public long EzdImagePosStartY { get; set; }
 
     }
 }

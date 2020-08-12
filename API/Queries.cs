@@ -9,14 +9,21 @@
     {
         public static async Task<string> GetRequestAsync(string uri)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
 
-            Task<WebResponse> task = Task.Factory.FromAsync(
-                request.BeginGetResponse,
-                asyncResult => request.EndGetResponse(asyncResult),
-                (object)null);
+                Task<WebResponse> task = Task.Factory.FromAsync(
+                    request.BeginGetResponse,
+                    asyncResult => request.EndGetResponse(asyncResult),
+                    (object)null);
 
-            return await task.ContinueWith(t => ReadStreamFromResponse(t.Result));
+                return await task.ContinueWith(t => ReadStreamFromResponse(t.Result));
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public static async Task<string> GetAllEventsAsync(string url, string headerParam)

@@ -41,13 +41,9 @@
 , [BgImageScale] real NOT NULL
 , [BgImagePosX] bigint NOT NULL
 , [BgImagePosY] bigint NOT NULL
-, [BgImagePosStartX] bigint NOT NULL
-, [BgImagePosStartY] bigint NOT NULL
 , [EzdImageScale] real NOT NULL
 , [EzdImagePosX] bigint NOT NULL
 , [EzdImagePosY] bigint NOT NULL
-, [EzdImagePosStartX] bigint NOT NULL
-, [EzdImagePosStartY] bigint NOT NULL
 );
 CREATE UNIQUE INDEX IF NOT EXISTS [UserData_UserData_UserData_UserData_UserData_sqlite_autoindex_UserData_1] ON [UserData] ([Id] ASC);";
 
@@ -75,13 +71,9 @@ WHERE Sequence = {user.Sequence} and EXISTS (select * from [UserData] where Sequ
 [BgImageScale],
 [BgImagePosX],
 [BgImagePosY],
-[BgImagePosStartX],
-[BgImagePosStartY],
 [EzdImageScale],
 [EzdImagePosX],
 [EzdImagePosY],
-[EzdImagePosStartX],
-[EzdImagePosStartY], 
 [Sequence],
 [Login],
 [Password],
@@ -94,13 +86,9 @@ VALUES ('{user.Token}'
 ,{user.BgImageScale.ToString(new CultureInfo("en-US"))}
 ,{user.BgImagePosX}
 ,{user.BgImagePosY}
-,{user.BgImagePosStartX}
-,{user.BgImagePosStartY}
 ,{user.EzdImageScale.ToString(new CultureInfo("en-US"))}
 ,{user.EzdImagePosX}
 ,{user.EzdImagePosY}
-,{user.EzdImagePosStartX}
-,{user.EzdImagePosStartY}
 ,{user.Sequence},
 '{user.Login}',
 '{user.Password}', 
@@ -151,14 +139,10 @@ VALUES ('{user.Token}'
                                     Sequence = (long) reader["Sequence"],
                                     BgImagePosX = (long) reader["BgImagePosX"],
                                     BgImagePosY = (long) reader["BgImagePosY"],
-                                    BgImagePosStartX = (long) reader["BgImagePosX"],
-                                    BgImagePosStartY = (long) reader["BgImagePosY"],
                                     BgImageScale = (double) reader["BgImageScale"],
                                     EzdImageScale = (double) reader["EzdImageScale"],
                                     EzdImagePosX = (long) reader["EzdImagePosX"],
                                     EzdImagePosY = (long) reader["EzdImagePosY"],
-                                    EzdImagePosStartX = (long) reader["EzdImagePosStartX"],
-                                    EzdImagePosStartY = (long) reader["EzdImagePosStartY"],
                                 });
                         }
                     }
@@ -203,14 +187,10 @@ VALUES ('{user.Token}'
                                 Sequence = (long) reader["Sequence"],
                                 BgImagePosX = (long) reader["BgImagePosX"],
                                 BgImagePosY = (long) reader["BgImagePosY"],
-                                BgImagePosStartX = (long) reader["BgImagePosStartX"],
-                                BgImagePosStartY = (long) reader["BgImagePosStartY"],
                                 BgImageScale = (double) reader["BgImageScale"],
                                 EzdImageScale = (double) reader["EzdImageScale"],
                                 EzdImagePosX = (long) reader["EzdImagePosX"],
                                 EzdImagePosY = (long) reader["EzdImagePosY"],
-                                EzdImagePosStartX = (long) reader["EzdImagePosStartX"],
-                                EzdImagePosStartY = (long) reader["EzdImagePosStartY"],
                             };
                         }
                     }
