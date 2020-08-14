@@ -21,7 +21,7 @@
                 return false;
             }
 
-            int period = 10;
+            int period = 30;
             string keyName = "Network30";
 
             RegistryKey rootKey = Registry.CurrentUser;

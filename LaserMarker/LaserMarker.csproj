@@ -201,13 +201,13 @@
       <Project>{e330087d-2ce1-4938-a5a0-05d0312bbb56}</Project>
       <Name>BLL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\EntityFrameworkSql\EntityFrameworkSql.csproj">
+      <Project>{14a3ee33-5691-450a-b4f3-f9ed908adeca}</Project>
+      <Name>EntityFrameworkSql</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EzdDataControl\EzdDataControl.csproj">
       <Project>{97c2c79e-41b0-4b40-95fd-9a7116b9bdcc}</Project>
       <Name>EzdDataControl</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\EzdDataL\EzdDataL.csproj">
-      <Project>{c4a3d472-8914-493c-a6a4-68cf30281022}</Project>
-      <Name>EzdDataL</Name>
     </ProjectReference>
     <ProjectReference Include="..\SDK\SDK.csproj">
       <Project>{42E23EBF-26D8-40A8-A555-64CADDA29B8A}</Project>

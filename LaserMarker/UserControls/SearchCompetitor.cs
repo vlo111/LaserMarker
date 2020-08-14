@@ -1,5 +1,6 @@
 ﻿using DevExpress.Utils.Extensions;
 using DevExpress.XtraBars.Docking2010.Customization;
+using EntityFrameworkSql;
 
 namespace LaserMarker.UserControls
 {
@@ -17,6 +18,7 @@ namespace LaserMarker.UserControls
     using global::LaserMarker.State;
     using Newtonsoft.Json;
     using Telerik.WinControls.UI;
+    using Request = EntityFrameworkSql.EntityQuery;
 
     public partial class SearchCompetitor : Form // : XtraUserControl
     {
@@ -85,7 +87,7 @@ namespace LaserMarker.UserControls
                 await Task.Delay(500, token).ConfigureAwait(true);
                 try
                 {
-                    var task = await Queries.GetRequestAsync(
+                    var task = await Request.GetRequestAsync(
                         $@"http://openeventor.ru/event/{CurrentApiData.Token}/plugins/engraver/get?search={this.searchControl.Text}");
 
                     if (task == null)
@@ -225,7 +227,7 @@ namespace LaserMarker.UserControls
 
             CloseSearch();
 
-            CurrentData.Preview?.UpdateImage(CurrentUIData.PanelImages.ToImage());
+            //CurrentData.Preview?.UpdateImage(CurrentUIData.PanelImages.ToImage());
         }
 
         private void simpleButton12_Click(object sender, EventArgs e)

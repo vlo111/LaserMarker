@@ -28,25 +28,6 @@
 
         public UpdateEzdData(List<Tuple<string, StringBuilder>> competitor)
         {
-            try
-            {
-                EzdDataL.Load data = new EzdDataL.Load();
-
-                if (!data.Go())
-                {
-                    //if (new CustomMessage().ShowDialog() >= 0)
-                    //{
-                    //    Application.Exit();
-                    //}
-
-                    Application.Exit();
-                }
-            }
-            catch (Exception)
-            {
-                Application.Exit();
-            }
-
             _competitor = competitor;
 
             this.MaximumSize = CurrentUIData.RightPanelSize;

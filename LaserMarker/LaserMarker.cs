@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using API;
 using BLL;
 using DevExpress.XtraEditors;
-using EzdDataL;
+using Request = EntityFrameworkSql.EntityQuery;
 using global::LaserMarker.DataAccess;
 using global::LaserMarker.State;
 using global::LaserMarker.UserControls;
@@ -238,7 +238,7 @@ namespace LaserMarker
 
                 const string Url = @"http://openeventor.ru/api/get_events";
 
-                var task = await Queries.GetAllEventsAsync(Url, base64HeaderValue);
+                var task = await Request.GetAllEventsAsync(Url, base64HeaderValue);
 
                 var result = JsonConvert.DeserializeObject<Eventor>(task);
 
@@ -982,39 +982,20 @@ namespace LaserMarker
                 {
                     //CurrentData.Preview?.Close();
 
-                    CurrentData.Preview = new Preview();
+                    CurrentData.Preview = new Preview(this._bgZoom, this._fgZoom, this._bgImgx, this._bgImgy, this._fgImgx, this._fgImgy);
 
                     CurrentData.Preview.Show();
                 }
 
-                CurrentData.Preview.UpdateImage(panel1.ToImage(), this._bgZoom, this._fgZoom, this._bgImgx, this._bgImgy, this._fgImgx, this._fgImgy);
+                CurrentData.Preview.UpdateImage(this._bgZoom, this._fgZoom, this._bgImgx, this._bgImgy, this._fgImgx, this._fgImgy);
             }
         }
 
         private void LaserMarker_Load(object sender, EventArgs e)
         {
-            try
+            if (CurrentData.EzdImage != null)
             {
-                Load data = new EzdDataL.Load();
-
-                if (!data.Go())
-                {
-                    //if (new CustomMessage().ShowDialog() >= 0)
-                    //{
-                    //    Application.Exit();
-                    //}
-
-                    Application.Exit();
-                }
-
-                if (CurrentData.EzdImage != null)
-                {
-                    this.OpenPreview();
-                }
-            }
-            catch (Exception)
-            {
-                Application.Exit();
+                this.OpenPreview();
             }
         }
 

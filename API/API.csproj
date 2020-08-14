@@ -46,7 +46,6 @@
     <Compile Include="Eventor.cs" />
     <Compile Include="EventorEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Queries.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

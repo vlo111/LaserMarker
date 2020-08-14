@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{6
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLL", "BLL\BLL.csproj", "{E330087D-2CE1-4938-A5A0-05D0312BBB56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EzdDataL", "EzdDataL\EzdDataL.csproj", "{C4A3D472-8914-493C-A6A4-68CF30281022}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFrameworkSql", "EntityFrameworkSql\EntityFrameworkSql.csproj", "{14A3EE33-5691-450A-B4F3-F9ED908ADECA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +41,10 @@ Global
 		{E330087D-2CE1-4938-A5A0-05D0312BBB56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E330087D-2CE1-4938-A5A0-05D0312BBB56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E330087D-2CE1-4938-A5A0-05D0312BBB56}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C4A3D472-8914-493C-A6A4-68CF30281022}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C4A3D472-8914-493C-A6A4-68CF30281022}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C4A3D472-8914-493C-A6A4-68CF30281022}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C4A3D472-8914-493C-A6A4-68CF30281022}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14A3EE33-5691-450A-B4F3-F9ED908ADECA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14A3EE33-5691-450A-B4F3-F9ED908ADECA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14A3EE33-5691-450A-B4F3-F9ED908ADECA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14A3EE33-5691-450A-B4F3-F9ED908ADECA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

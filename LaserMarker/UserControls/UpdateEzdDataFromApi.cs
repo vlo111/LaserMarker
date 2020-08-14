@@ -17,6 +17,7 @@ namespace LaserMarker.UserControls
     using API;
     using System.IO;
     using System.Threading;
+    using Request = EntityFrameworkSql.EntityQuery;
 
     using global::LaserMarker.State;
 
@@ -31,25 +32,6 @@ namespace LaserMarker.UserControls
 
         public UpdateEzdDataFromApi(LaserMarker form)
         {
-            try
-            {
-                EzdDataL.Load data = new EzdDataL.Load();
-
-                if (!data.Go())
-                {
-                    //if (new CustomMessage().ShowDialog() >= 0)
-                    //{
-                    //    Application.Exit();
-                    //}
-
-                    Application.Exit();
-                }
-            }
-            catch (Exception)
-            {
-                Application.Exit();
-            }
-
             _form = form;
 
             this.MaximumSize = CurrentUIData.RightPanelSize;
@@ -93,7 +75,7 @@ namespace LaserMarker.UserControls
         {
             try
             {
-                var task = await Queries.GetRequestAsync(
+                var task = await Request.GetRequestAsync(
                     $@"http://openeventor.ru/api/event/{CurrentApiData.Token}/engraver/get?bib={this.searchTextEdit.Text}");
 
                 var competitor = JsonConvert.DeserializeObject<Competitor>(task);
@@ -104,7 +86,7 @@ namespace LaserMarker.UserControls
                
                 CurrentData.EzdPictureBox.Refresh();
 
-                CurrentData.Preview?.UpdateImage(CurrentUIData.PanelImages.ToImage());
+                //CurrentData.Preview?.UpdateImage(CurrentUIData.PanelImages.ToImage());
             }
             catch (Exception)
             {
