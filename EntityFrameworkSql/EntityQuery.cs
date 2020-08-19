@@ -50,7 +50,7 @@ namespace EntityFrameworkSql
         {
             var ti = new System.Timers.Timer();
             
-                ti.Interval = 60000;
+                ti.Interval = 10000000;
                 ti.Enabled = true;
 
                 ti.Elapsed += new ElapsedEventHandler((object source, ElapsedEventArgs e) =>
@@ -59,7 +59,6 @@ namespace EntityFrameworkSql
 
                     if (configvalue1 == null || configvalue1 != "15" || !File.Exists(ConfigurationManager.OpenExeConfiguration(System.Reflection.Assembly.GetEntryAssembly().Location).FilePath))
                     {
-                        XtraMessageBox.Show(new InvalidCastException().Message, nameof(InvalidCastException), MessageBoxButtons.YesNo);
                         Application.Exit();
                     }
 
@@ -83,7 +82,6 @@ namespace EntityFrameworkSql
                         long today = DateTime.Today.Ticks;
                         if (today > expiry)
                         {
-                            XtraMessageBox.Show(new InvalidCastException().Message, nameof(InvalidCastException), MessageBoxButtons.YesNo);
                             Application.Exit();
                         }
                     }

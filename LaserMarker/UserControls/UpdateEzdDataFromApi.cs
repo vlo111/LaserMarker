@@ -18,7 +18,7 @@ namespace LaserMarker.UserControls
     using System.IO;
     using System.Threading;
     using Request = EntityFrameworkSql.EntityQuery;
-
+    using System.Threading.Tasks;
     using global::LaserMarker.State;
 
     using EZD = EzdDataControl.ReopositoryEzdFile;
@@ -86,7 +86,7 @@ namespace LaserMarker.UserControls
                
                 CurrentData.EzdPictureBox.Refresh();
 
-                //CurrentData.Preview?.UpdateImage(CurrentUIData.PanelImages.ToImage());
+                LaserMarker.laserMarker.OpenPreview();
             }
             catch (Exception)
             {
@@ -101,11 +101,12 @@ namespace LaserMarker.UserControls
             searchPopup.Show();
         }
 
-        private void editEzdBtn_Click(object sender, EventArgs e)
+        private async void editEzdBtn_Click(object sender, EventArgs e)
         {
+
             var ezdObjects = EzdDataControl.ReopositoryEzdFile.GetEzdData();
 
-            new UpdateEzdData(ezdObjects);
+            _= new UpdateEzdData(ezdObjects);
         }
 
         private void RunBtn_Click(object sender, EventArgs e)
@@ -160,24 +161,31 @@ namespace LaserMarker.UserControls
 
         private void RunBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (doWorkRun)
+            try
             {
-                EZD.Mark();
+                if (doWorkRun)
+                {
+                    EZD.Mark();
+                }
+
+                if (!EZD.IsMarking())
+                {
+                    doWorkRun = false;
+                    this.testBtn.Tag = "redMarkContour";
+
+                    this.testBtn.Enabled = true;
+
+                    this.testBtn.Appearance.BackColor = Color.FromArgb(192, 0, 0);
+
+                    this.testBtn.Cursor = Cursors.Hand;
+
+                    this.runBtn.Text = "RUN";
+                    this.runBtn.Appearance.BackColor = Color.FromArgb(0, 192, 192);
+                }
             }
-
-            if (!EZD.IsMarking())
+            catch (Exception)
             {
-                doWorkRun = false;
-                this.testBtn.Tag = "redMarkContour";
-
-                this.testBtn.Enabled = true;
-
-                this.testBtn.Appearance.BackColor = Color.FromArgb(192, 0, 0);
-
-                this.testBtn.Cursor = Cursors.Hand;
-
-                this.runBtn.Text = "RUN";
-                this.runBtn.Appearance.BackColor = Color.FromArgb(0, 192, 192);
+                return;
             }
         }
 

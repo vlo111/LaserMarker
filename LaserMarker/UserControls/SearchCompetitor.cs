@@ -50,110 +50,120 @@ namespace LaserMarker.UserControls
             CurrentData.Preview?.ShowSearch(this.Height);
         }
 
+        bool switching = true;
+
+        private static DateTime time = new DateTime();
+
         private async void searchControl1_TextChanged(object sender, EventArgs e)
         {
             var search = this.searchControl.Text;
-
-            if (!string.IsNullOrEmpty(this.searchControl.Text))
+            try
             {
-                if (string.IsNullOrEmpty(search))
+                if (!string.IsNullOrEmpty(this.searchControl.Text))
                 {
-                    return;
-                }
-
-                if (_tokenSource != null)
-                {
-                    _tokenSource.Cancel();
-                }
-
-                _tokenSource = new CancellationTokenSource();
-
-                try
-                {
-                    this.waitingBar.StartWaiting();
-
-                    await loadPrestatieGetCompetitorAsync(this.listView1, _tokenSource.Token, search);
-                }
-                catch (OperationCanceledException)
-                {
-                }
-            }
-        }
-
-        private async Task loadPrestatieGetCompetitorAsync(ListView list, CancellationToken token, string search)
-        {
-            if (!string.IsNullOrEmpty(search))
-            {
-                await Task.Delay(500, token).ConfigureAwait(true);
-                try
-                {
-                    var task = await Request.GetRequestAsync(
-                        $@"http://openeventor.ru/event/{CurrentApiData.Token}/plugins/engraver/get?search={this.searchControl.Text}");
-
-                    if (task == null)
+                    if (string.IsNullOrEmpty(search))
                     {
                         return;
                     }
-                    this._competitors = JsonConvert.DeserializeObject<Competitors>(task);
 
-                    UpdateListView(search);
+                    this.waitingBar.StartWaiting();
+
+                    var mili = DateTime.Now.TimeOfDay.TotalMilliseconds - time.TimeOfDay.TotalMilliseconds;
+
+                    if (mili > 0 && mili <= 500)
+                    {
+                        switching = false;
+                    }
+
+                    time = DateTime.Now;
+
+                    if (_tokenSource != null)
+                    {
+                        _tokenSource.Cancel();
+                    }
+
+                    _tokenSource = new CancellationTokenSource();
+
+                    _= Task.Delay(500, _tokenSource.Token).ConfigureAwait(true);
+
+                    //_tokenSource.Token.ThrowIfCancellationRequested();
+
+                    if (switching)
+                    {
+                        var task = await Request.GetRequestAsync(
+                            $@"http://openeventor.ru/event/{CurrentApiData.Token}/plugins/engraver/get?search={search}");
+
+                        if (task == null)
+                        {
+                            this.waitingBar.StopWaiting();
+                            return;
+                        }
+
+                        this._competitors = JsonConvert.DeserializeObject<Competitors>(task);
+
+                        UpdateListView(search);
+                    }
+
+                    switching = true;
+
 
                     this.waitingBar.StopWaiting();
-
-                    token.ThrowIfCancellationRequested();
                 }
-                catch (OperationCanceledException ex)
-                {
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
+            }
+            catch (Exception)
+            {
+                this.waitingBar.StopWaiting();
             }
         }
 
         private void UpdateListView(string search)
         {
-            this.listView1.Items.Clear();
+            try
+            {
+                this.listView1.Items.Clear();
 
-            var listItem = new List<ListViewItem>();
+                var listItem = new List<ListViewItem>();
 
-            if (this._competitors.CompetitorList == null || this._competitors.CompetitorList.Count <= 0)
+                if (this._competitors.CompetitorList == null || this._competitors.CompetitorList.Count <= 0)
+                {
+                    return;
+                }
+
+                var competitors = this._competitors.CompetitorList.Where(
+                    list => list.Values
+                        .Any(l => l
+                            .ToLower()
+                            .Contains(this.searchControl.Text.Trim()
+                                .ToLower())));
+
+                var searchedCompetitorList = competitors.ToList();
+
+                // Columns
+                if (this.listView1.Columns.Count <= 0)
+                {
+                    ICollection<ColumnHeader> columns = new List<ColumnHeader>();
+
+                    searchedCompetitorList.FirstOrDefault()
+                        ?.Keys.ForEach(key =>
+                        {
+                            columns.Add(new ColumnHeader() {Text = key, Width = this.listView1.Width / 100 * 20});
+                        });
+
+                    this.listView1.Columns.AddRange(columns.ToArray());
+                }
+
+                //Items
+                searchedCompetitorList.ForEach(
+                    p => { listItem.Add(new ListViewItem(p.Values.ToArray())); });
+
+                this.listView1.Items.AddRange(listItem.ToArray());
+
+                SearchCompetitorPreview.UpdateLData(searchedCompetitorList, search);
+            }
+            catch (Exception e)
             {
                 return;
             }
-
-            var competitors = this._competitors.CompetitorList.Where(
-                list => list.Values
-                    .Any(l => l
-                        .ToLower()
-                        .Contains(search.Trim()
-                            .ToLower())));
-
-            var searchedCompetitorList = competitors.ToList();
-
-            // Columns
-            if (this.listView1.Columns.Count <= 0)
-            {
-                ICollection<ColumnHeader> columns = new List<ColumnHeader>();
-
-                searchedCompetitorList.FirstOrDefault()
-                    ?.Keys.ForEach(key =>
-                    {
-                        columns.Add(new ColumnHeader() {Text = key, Width = this.listView1.Width / 100 * 20});
-                    });
-
-                this.listView1.Columns.AddRange(columns.ToArray());
-            }
-
-            //Items
-            searchedCompetitorList.ForEach(
-                p => { listItem.Add(new ListViewItem(p.Values.ToArray())); });
-
-            this.listView1.Items.AddRange(listItem.ToArray());
-
-            SearchCompetitorPreview.UpdateLData(searchedCompetitorList, this.searchControl.Text);
         }
 
         private void KeyBtns_Click(object sender, EventArgs e)
@@ -227,7 +237,7 @@ namespace LaserMarker.UserControls
 
             CloseSearch();
 
-            //CurrentData.Preview?.UpdateImage(CurrentUIData.PanelImages.ToImage());
+            LaserMarker.laserMarker.OpenPreview();
         }
 
         private void simpleButton12_Click(object sender, EventArgs e)

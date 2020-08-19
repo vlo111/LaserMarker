@@ -18,17 +18,22 @@ namespace LaserMarker
 
     public partial class Preview : Form
     {
+        private SearchCompetitorPreview searchPreviewPopup;
+
+        private float _bgWidth;
+        private float _bgHeight;
+        private float _ezdWidth;
+        private float _ezdHeight;
         private float bgX;
         private float bgY;
 
         private float BgWidth;
         private float BgHeight;
-        
+
         private float ezdX;
         private float ezdY;
 
-        private float ezdWidth;
-        private float ezdHeight;
+        public bool showEzd = false;
 
         #region Fields BG
 
@@ -59,20 +64,31 @@ namespace LaserMarker
 
         #endregion
 
-        public Preview(float bgZoom, float fgZoom, float bgx, float bgy, float ezdx, float ezdy)
+        public Preview(Size primaryPanelSize, float bgZoom, float fgZoom,
+            float bgx, float bgy, float ezdx, float ezdy,
+            float bgHeight, float bgWidth, float ezdHeight, float ezdWidth)
         {
+            InitializeComponent();
+
+            this._bgWidth = bgWidth;
+
+            this._bgHeight = bgHeight;
+
+            this._ezdWidth = ezdWidth;
+
+            this._ezdHeight = ezdHeight;
+
             this.fg_zoom = fgZoom;
+
             this.zoom = bgZoom;
 
             this.imgx = bgx;
+
             this.imgy = bgy;
 
             this.fg_imgx = ezdx;
+
             this.fg_imgy = ezdy;
-
-            InitializeComponent();
-
-            this.foregroundPictureBox.Parent = this.backgroundPictureBox;
 
             // Get the second monitor screen
             Screen screen = ScreenSize.GetSecondaryScreen();
@@ -89,50 +105,64 @@ namespace LaserMarker
                 this.Size = new Size(screen.WorkingArea.Width, screen.WorkingArea.Height);
             }
 
-            // Fit width
-            bgX = CurrentData.BgImage.Width;
-            bgY = CurrentData.BgImage.Height;
-            zoom = (float)(backgroundPictureBox.Width / bgX);
-            //Выставлем по центру
-            imgy = (backgroundPictureBox.Height / 2) - ((bgY * zoom) / 2);
+            this.foregroundPictureBox.Parent = this.backgroundPictureBox;
+
+            ConfigurationPreview(primaryPanelSize);
 
             backgroundPictureBox.Paint += new PaintEventHandler(imageBox_Paint);
 
-
-
-            Graphics fg = this.CreateGraphics();
-
-            ezdX = CurrentData.EzdImage.Width;
-            ezdY = CurrentData.EzdImage.Height;
-
-            fg_zoom = (float)(foregroundPictureBox.Height / ezdY);
-            //Выставлем по центру
-            fg_imgx = (foregroundPictureBox.Width / 2) - ((ezdX * fg_zoom) / 2);
-
-
-
-
-
             foregroundPictureBox.Paint += new PaintEventHandler(EzdImageBox_Paint);
-
-            foregroundPictureBox.Parent = backgroundPictureBox;
-
         }
 
-        public void UpdateImage(float bgZoom, float fgZoom, float bgx, float bgy, float ezdx, float ezdy)
+        private void ConfigurationPreview(Size primaryPanelSize)
         {
+            //  if (this.Height != (float)primaryPanelSize.Height)
+            {
+                // this.Width = 1920;
+                // this.Height = 1080;
+                float zoomC = (this.Height / (float)primaryPanelSize.Height);
+                this.zoom = this.zoom * zoomC;
+                this.fg_zoom = this.fg_zoom * zoomC;
+
+
+                int fx = (primaryPanelSize.Width / 2) - (int)fg_imgx;
+                int fy = (primaryPanelSize.Height / 2) - (int)fg_imgy;
+                int bx = (primaryPanelSize.Width / 2) - (int)imgx;
+                int by = (primaryPanelSize.Height / 2) - (int)imgy;
+
+                this.imgx += (float)(bx - (float)(bx * zoomC)) + ((this.Width - primaryPanelSize.Width) / 2);
+                this.fg_imgx += (float)(fx - (float)(fx * zoomC)) + ((this.Width - primaryPanelSize.Width) / 2);
+                this.imgy += (float)(by - (float)(by * zoomC)) + ((this.Height - primaryPanelSize.Height) / 2);
+                this.fg_imgy += (float)(fy - (float)(fy * zoomC)) + ((this.Height - primaryPanelSize.Height) / 2);
+
+            }
+
+        }
+        public void UpdateImage(Size primaryPanelSize, float bgZoom, float fgZoom,
+            float bgx, float bgy, float ezdx, float ezdy,
+            float bgHeight, float bgWidth, float ezdHeight, float ezdWidth)
+        {
+            this._bgWidth = bgWidth;
+
+            this._bgHeight = bgHeight;
+
+            this._ezdWidth = ezdWidth;
+
+            this._ezdHeight = ezdHeight;
+
             this.fg_zoom = fgZoom;
+
             this.zoom = bgZoom;
 
             this.imgx = bgx;
+
             this.imgy = bgy;
 
             this.fg_imgx = ezdx;
             this.fg_imgy = ezdy;
 
-            //this.backgroundPictureBox.Image = CurrentData.BgImage; //  image.Scale();
+            ConfigurationPreview(primaryPanelSize);
 
-            //this.foregroundPictureBox.Image = CurrentData.EzdImage;
             this.backgroundPictureBox.Refresh();
 
             this.foregroundPictureBox.Refresh();
@@ -140,33 +170,47 @@ namespace LaserMarker
 
         public void ShowSearch(int height)
         {
-            //searchPreviewPopup = new SearchCompetitorPreview(height);
+            searchPreviewPopup = new SearchCompetitorPreview(height);
 
-            //searchPreviewPopup.Show();
+            searchPreviewPopup.Show();
         }
         public void CloseSearch()
         {
-            //searchPreviewPopup.Close();
+            searchPreviewPopup.Close();
         }
 
         private void imageBox_Paint(object sender, PaintEventArgs e)
         {
-            e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            float N2BgWidth = (_bgWidth * zoom);
+            float N2BgHeight = ((_bgHeight / _bgWidth) * N2BgWidth);
 
-            BgWidth = (bgX * zoom);
-            BgHeight = ((bgY / bgX) * BgWidth);
+            if (CurrentData.BgImage != null)
+            {
+                e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
-            e.Graphics.DrawImage(CurrentData.BgImage, (int)imgx, (int)imgy, (int)BgWidth, (int)BgHeight);
+                e.Graphics.DrawImage(CurrentData.BgImage, (int)imgx, (int)imgy, (int)N2BgWidth, (int)N2BgHeight);
+            }
         }
 
         private void EzdImageBox_Paint(object sender, PaintEventArgs e)
         {
-            e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            float N2ezdWidth = (_ezdWidth * fg_zoom);
+            float N2ezdHeight = ((_ezdHeight / _ezdWidth) * N2ezdWidth);
 
-            ezdWidth = (ezdX * fg_zoom);
-            ezdHeight = ((ezdY / ezdX) * ezdWidth);
+            if (CurrentData.EzdImage != null)
+            {
+                if (showEzd)
+                {
+                    e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
-            e.Graphics.DrawImage(CurrentData.EzdImage, (int)fg_imgx, (int)fg_imgy, (int)ezdWidth, (int)ezdHeight);
+                    e.Graphics.DrawImage(CurrentData.EzdImage, (int)fg_imgx, (int)fg_imgy, (int)N2ezdWidth, (int)N2ezdHeight);
+                }
+            }
+        }
+
+        public void RefreshEzd()
+        {
+            this.foregroundPictureBox.Refresh();
         }
     }
 }

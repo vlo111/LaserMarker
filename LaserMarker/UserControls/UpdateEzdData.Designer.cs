@@ -219,7 +219,7 @@
             this.layoutControl2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl2.Location = new System.Drawing.Point(0, 0);
             this.layoutControl2.Name = "layoutControl2";
-            this.layoutControl2.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(515, 188, 534, 400);
+            this.layoutControl2.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(261, 144, 534, 400);
             this.layoutControl2.Root = this.layoutControlGroup1;
             this.layoutControl2.Size = new System.Drawing.Size(465, 569);
             this.layoutControl2.TabIndex = 0;
@@ -227,6 +227,7 @@
             // 
             // obj1TextEdit
             // 
+            this.obj1TextEdit.Cursor = System.Windows.Forms.Cursors.Hand;
             this.obj1TextEdit.EditValue = "";
             this.obj1TextEdit.Location = new System.Drawing.Point(95, 107);
             this.obj1TextEdit.MaximumSize = new System.Drawing.Size(0, 1);
@@ -362,6 +363,7 @@
             // 
             this.obj1PlusBtn.Appearance.Font = new System.Drawing.Font("Times New Roman", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.obj1PlusBtn.Appearance.Options.UseFont = true;
+            this.obj1PlusBtn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.obj1PlusBtn.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("obj1PlusBtn.ImageOptions.SvgImage")));
             this.obj1PlusBtn.Location = new System.Drawing.Point(22, 107);
             this.obj1PlusBtn.Name = "obj1PlusBtn";
@@ -383,6 +385,7 @@
             // 
             // obj2PlusBtn
             // 
+            this.obj2PlusBtn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.obj2PlusBtn.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("obj2PlusBtn.ImageOptions.SvgImage")));
             this.obj2PlusBtn.Location = new System.Drawing.Point(22, 108);
             this.obj2PlusBtn.Name = "obj2PlusBtn";
@@ -393,6 +396,7 @@
             // 
             // obj3PlusBtn
             // 
+            this.obj3PlusBtn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.obj3PlusBtn.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("obj3PlusBtn.ImageOptions.SvgImage")));
             this.obj3PlusBtn.Location = new System.Drawing.Point(22, 109);
             this.obj3PlusBtn.Name = "obj3PlusBtn";
@@ -403,6 +407,7 @@
             // 
             // obj4PlusBtn
             // 
+            this.obj4PlusBtn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.obj4PlusBtn.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("obj4PlusBtn.ImageOptions.SvgImage")));
             this.obj4PlusBtn.Location = new System.Drawing.Point(22, 110);
             this.obj4PlusBtn.Name = "obj4PlusBtn";
@@ -413,6 +418,7 @@
             // 
             // obj5PlusBtn
             // 
+            this.obj5PlusBtn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.obj5PlusBtn.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("obj5PlusBtn.ImageOptions.SvgImage")));
             this.obj5PlusBtn.Location = new System.Drawing.Point(22, 111);
             this.obj5PlusBtn.Name = "obj5PlusBtn";
@@ -423,6 +429,7 @@
             // 
             // obj6PlusBtn
             // 
+            this.obj6PlusBtn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.obj6PlusBtn.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("obj6PlusBtn.ImageOptions.SvgImage")));
             this.obj6PlusBtn.Location = new System.Drawing.Point(22, 112);
             this.obj6PlusBtn.Name = "obj6PlusBtn";
@@ -433,6 +440,7 @@
             // 
             // obj7PlusBtn
             // 
+            this.obj7PlusBtn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.obj7PlusBtn.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("obj7PlusBtn.ImageOptions.SvgImage")));
             this.obj7PlusBtn.Location = new System.Drawing.Point(22, 113);
             this.obj7PlusBtn.Name = "obj7PlusBtn";
@@ -443,6 +451,7 @@
             // 
             // obj8PlusBtn
             // 
+            this.obj8PlusBtn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.obj8PlusBtn.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("obj8PlusBtn.ImageOptions.SvgImage")));
             this.obj8PlusBtn.Location = new System.Drawing.Point(22, 114);
             this.obj8PlusBtn.Name = "obj8PlusBtn";
@@ -453,6 +462,7 @@
             // 
             // obj4MinusBtn
             // 
+            this.obj4MinusBtn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.obj4MinusBtn.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("obj4MinusBtn.ImageOptions.SvgImage")));
             this.obj4MinusBtn.Location = new System.Drawing.Point(398, 110);
             this.obj4MinusBtn.Name = "obj4MinusBtn";
@@ -463,6 +473,7 @@
             // 
             // obj3MinusBtn
             // 
+            this.obj3MinusBtn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.obj3MinusBtn.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("obj3MinusBtn.ImageOptions.SvgImage")));
             this.obj3MinusBtn.Location = new System.Drawing.Point(398, 109);
             this.obj3MinusBtn.Name = "obj3MinusBtn";
@@ -473,6 +484,7 @@
             // 
             // obj5MinusBtn
             // 
+            this.obj5MinusBtn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.obj5MinusBtn.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("obj5MinusBtn.ImageOptions.SvgImage")));
             this.obj5MinusBtn.Location = new System.Drawing.Point(398, 111);
             this.obj5MinusBtn.Name = "obj5MinusBtn";
@@ -483,6 +495,7 @@
             // 
             // obj7MinusBtn
             // 
+            this.obj7MinusBtn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.obj7MinusBtn.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("obj7MinusBtn.ImageOptions.SvgImage")));
             this.obj7MinusBtn.Location = new System.Drawing.Point(398, 113);
             this.obj7MinusBtn.Name = "obj7MinusBtn";
@@ -493,6 +506,7 @@
             // 
             // obj8MinusBtn
             // 
+            this.obj8MinusBtn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.obj8MinusBtn.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("obj8MinusBtn.ImageOptions.SvgImage")));
             this.obj8MinusBtn.Location = new System.Drawing.Point(398, 114);
             this.obj8MinusBtn.Name = "obj8MinusBtn";
@@ -503,6 +517,7 @@
             // 
             // obj6MinusBtn
             // 
+            this.obj6MinusBtn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.obj6MinusBtn.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("obj6MinusBtn.ImageOptions.SvgImage")));
             this.obj6MinusBtn.Location = new System.Drawing.Point(398, 112);
             this.obj6MinusBtn.Name = "obj6MinusBtn";
@@ -513,6 +528,7 @@
             // 
             // obj2MinusBtn
             // 
+            this.obj2MinusBtn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.obj2MinusBtn.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("obj2MinusBtn.ImageOptions.SvgImage")));
             this.obj2MinusBtn.Location = new System.Drawing.Point(398, 108);
             this.obj2MinusBtn.Name = "obj2MinusBtn";
@@ -1006,9 +1022,9 @@
             // emptySpaceItem1
             // 
             this.emptySpaceItem1.AllowHotTrack = false;
-            this.emptySpaceItem1.Location = new System.Drawing.Point(0, 96);
+            this.emptySpaceItem1.Location = new System.Drawing.Point(0, 93);
             this.emptySpaceItem1.Name = "emptySpaceItem1";
-            this.emptySpaceItem1.Size = new System.Drawing.Size(425, 363);
+            this.emptySpaceItem1.Size = new System.Drawing.Size(425, 366);
             this.emptySpaceItem1.TextSize = new System.Drawing.Size(0, 0);
             // 
             // marginUpEmptySpace
@@ -1093,7 +1109,7 @@
             // 
             // testRedMarkBackgroundWorker
             // 
-            this.testRedMarkBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.TestRedMarkBackgroundWorkerr_DoWork);
+            this.testRedMarkBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.TestRedMarkBackgroundWorker_DoWork);
             // 
             // testRedMarkContourBackgroundWorker
             // 
@@ -1110,6 +1126,7 @@
             this.Controls.Add(this.layoutControl1);
             this.Name = "UpdateEzdData";
             this.Size = new System.Drawing.Size(489, 593);
+            this.Load += new System.EventHandler(this.UpdateEzdData_Load);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.flyoutPanel1)).EndInit();
@@ -1238,6 +1255,5 @@
         private System.ComponentModel.BackgroundWorker runBackgroundWorker;
         private System.ComponentModel.BackgroundWorker testRedMarkBackgroundWorker;
         private System.ComponentModel.BackgroundWorker testRedMarkContourBackgroundWorker;
-
     }
 }

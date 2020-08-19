@@ -21,6 +21,7 @@ namespace LaserMarker
 
     public partial class LaserMarker : Form
     {
+        public static LaserMarker laserMarker;
         #region Path Field
 
         private readonly string iconPath = Directory.GetCurrentDirectory() + @"\icon\";
@@ -33,17 +34,26 @@ namespace LaserMarker
 
         #region PictureBox Field
 
+        public float BgHeight { get; set; }
+        public float BgWidth { get; set; }
+        public float ezdWidth { get; set; }
+        public float ezdHeight { get; set; }
+        public float NBgHeight { get; set; }
+        public float NBgWidth { get; set; }
+        public float NezdWidth { get; set; }
+        public float NezdHeight { get; set; }
+
         #region Fields for BG picture
 
         private Point _bg_mouseDown;
 
-        private int _bgStartx; // offset of image when mouse was pressed
+        private float _bgStartx; // offset of image when mouse was pressed
 
-        private int _bgStarty;
+        private float _bgStarty;
 
-        private int _bgImgx; // current offset of image
+        private float _bgImgx; // current offset of image
 
-        private int _bgImgy;
+        private float _bgImgy;
 
         private bool _bgMousepressed; // true as long as left mousebutton is pressed
 
@@ -56,14 +66,14 @@ namespace LaserMarker
         private Point _fg_mouseDown;
 
         // offset of image when mouse was pressed
-        private int _fgStartx;
+        private float _fgStartx;
 
-        private int _fgStarty;
+        private float _fgStarty;
 
         // current offset of image
-        private int _fgImgx;
+        private float _fgImgx;
 
-        private int _fgImgy;
+        private float _fgImgy;
 
         // true as long as left mousebutton is pressed
         private bool _fg_mousepressed;
@@ -119,6 +129,8 @@ namespace LaserMarker
             this.backgroundPictureBox.Paint += this.BackgroundImageBox_Paint;
 
             Initial();
+
+            laserMarker = this;
         }
 
         private void Initial()
@@ -159,11 +171,11 @@ namespace LaserMarker
 
                     if (currentData != null)
                     {
+                        this.InitialCurrentDataFromUser(currentData);
+
                         this.CreateBgPictureBoxImage();
 
                         this.CreateEzdPictureBoxImage();
-
-                        this.InitialCurrentDataFromUser(currentData);
                     }
                 }
             }
@@ -311,9 +323,15 @@ namespace LaserMarker
 
             var fg = this.CreateGraphics();
 
-            // Fit width
-            this._fgZoom = (this.foregroundPictureBox.Width / (float) CurrentData.EzdImage.Width)
+            ezdWidth = CurrentData.EzdImage.Width;
+            ezdHeight = CurrentData.EzdImage.Height;
+
+            this._fgZoom = (this.foregroundPictureBox.Width / (float)CurrentData.EzdImage.Width)
                            * (CurrentData.EzdImage.HorizontalResolution / fg.DpiX);
+            //Выставлем по центру
+            this._fgImgx = (foregroundPictureBox.Width / 2) - ((int) (ezdWidth * this._fgZoom) / 2);
+                this._fgImgy = 0;
+
 
             this.foregroundPictureBox.Refresh();
         }
@@ -328,13 +346,20 @@ namespace LaserMarker
             var g = this.CreateGraphics();
 
             // Fit width
-            this._bgZoom = (this.backgroundPictureBox.Width / (float) CurrentData.BgImage.Width)
+            BgWidth = CurrentData.BgImage.Width;
+            BgHeight = CurrentData.BgImage.Height;
+
+            this._bgZoom = (this.backgroundPictureBox.Width / (float)CurrentData.BgImage.Width)
                            * (CurrentData.BgImage.HorizontalResolution / g.DpiX);
+                //Выставлем по центру
+            this._bgImgy = (backgroundPictureBox.Height / 2) - ((int) (BgHeight * this._bgZoom) / 2);
+                this._bgImgx = 0;
 
             this.backgroundPictureBox.Refresh();
         }
 
         #endregion Create/Delete image from PictureBox
+
 
         #region Picturebox
 
@@ -383,6 +408,12 @@ namespace LaserMarker
                         this._bgImgy += (int) (this.backgroundPictureBox.Height * 0.20F / this._bgZoom);
                         this.backgroundPictureBox.Refresh();
                         break;
+                    case Keys.Oemplus:
+                        this.Scale(ScaleMode.Plus);
+                        break;
+                    case Keys.OemMinus:
+                        this.Scale(ScaleMode.Minus);
+                        break;
                 }
             }
 
@@ -422,6 +453,12 @@ namespace LaserMarker
                     this._fgImgy += (int) (this.foregroundPictureBox.Height * 0.20F / this._fgZoom);
                     this.foregroundPictureBox.Refresh();
                     break;
+                case Keys.Oemplus:
+                    this.Scale(ScaleMode.Plus);
+                    break;
+                case Keys.OemMinus:
+                    this.Scale(ScaleMode.Minus);
+                    break;
             }
 
             return base.ProcessCmdKey(ref msg, keyData);
@@ -429,13 +466,71 @@ namespace LaserMarker
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            if (e.Delta > 0)
+            MouseEventArgs mouse = e as MouseEventArgs;
+            Point mousePosNow = mouse.Location;
+
+            float oldimagex = 0;
+            float oldimagey = 0;
+
+            if (this.bgCheckBox.Checked)
             {
-                this.Scale(e, ScaleMode.Plus, ScalePMCenter.Scroll);
+                float oldzoom = this._bgZoom;
+
+                int x = mousePosNow.X - (int) this._bgImgx;
+                int y = mousePosNow.Y - (int) this._bgImgy;
+
+
+                if (e.Delta > 0)
+                {
+                    this._bgZoom = (float) (this._bgZoom * 1.1);
+                    oldimagex = (float) (x - (x * 1.1));
+                    oldimagey = (float) (y - (y * 1.1));
+                }
+
+                else if (e.Delta < 0)
+                {
+                    this._bgZoom = (float) (this._bgZoom / 1.1);
+                    oldimagex = (float) (x - (x / 1.1));
+                    oldimagey = (float) (y - (y / 1.1));
+                }
+
+
+                this._bgImgx += oldimagex;
+                this._bgImgy += oldimagey;
+
+                backgroundPictureBox.Refresh();
             }
-            else if (e.Delta < 0)
+
+            if (this.fgCheckBox.Checked)
             {
-                this.Scale(e, ScaleMode.Minus, ScalePMCenter.Scroll);
+                float oldzoom = this._fgZoom;
+
+                int x = mousePosNow.X - (int) this._fgImgx;
+                int y = mousePosNow.Y - (int) this._fgImgy;
+
+
+                if (e.Delta > 0)
+                {
+                    this._fgZoom = (float) (this._fgZoom * 1.1);
+
+                    oldimagex = (float) (x - (x * 1.1));
+                    oldimagey = (float) (y - (y * 1.1));
+                }
+
+                else if (e.Delta < 0)
+                {
+                    if (ezdWidth > 10 && ezdHeight > 10)
+                        this._fgZoom = (float) (this._fgZoom / 1.1);
+
+                    oldimagex = (float) (x - (x / 1.1));
+                    oldimagey = (float) (y - (y / 1.1));
+                }
+
+
+                this._fgImgx += oldimagex;
+                this._fgImgy += oldimagey;
+
+                foregroundPictureBox.Refresh();
             }
         }
 
@@ -480,8 +575,8 @@ namespace LaserMarker
                     var deltaY = mousePosNow.Y - this._bg_mouseDown.Y;
 
                     // calculate new offset of image based on the current zoom factor
-                    this._bgImgx = (int) (this._bgStartx + (deltaX / this._bgZoom));
-                    this._bgImgy = (int) (this._bgStarty + (deltaY / this._bgZoom));
+                    this._bgImgx = (int) (this._bgStartx + (deltaX));
+                    this._bgImgy = (int) (this._bgStarty + (deltaY));
 
                     this.backgroundPictureBox.Refresh();
                 }
@@ -493,8 +588,8 @@ namespace LaserMarker
                     var deltaY = mousePosNow.Y - this._fg_mouseDown.Y;
 
                     // calculate new offset of image based on the current zoom factor
-                    this._fgImgx = (int) (this._fgStartx + (deltaX / this._fgZoom));
-                    this._fgImgy = (int) (this._fgStarty + (deltaY / this._fgZoom));
+                    this._fgImgx = (int) (this._fgStartx + (deltaX));
+                    this._fgImgy = (int) (this._fgStarty + (deltaY));
 
                     this.foregroundPictureBox.Refresh();
                 }
@@ -522,11 +617,12 @@ namespace LaserMarker
             }
 
             e.Graphics.InterpolationMode = InterpolationMode.Low;
-            e.Graphics.ScaleTransform(this._fgZoom, this._fgZoom);
-            e.Graphics.DrawImage(CurrentData.EzdImage, this._fgImgx, this._fgImgy);
 
-            //this.PositionLabel.Text =
-            //    $@"ezd X - {this._fgImgx}, Y - {this._fgImgy} | bg X - {this._bgImgx}, Y - {this._bgImgy}";
+            NezdWidth = (ezdWidth * this._fgZoom);
+            NezdHeight = ((ezdHeight / ezdWidth) * NezdWidth);
+
+            e.Graphics.DrawImage(CurrentData.EzdImage, (int) this._fgImgx, (int) this._fgImgy, (int) NezdWidth,
+                (int) NezdHeight);
         }
 
         private void BackgroundImageBox_Paint(object sender, PaintEventArgs e)
@@ -536,9 +632,11 @@ namespace LaserMarker
                 return;
             }
 
-            e.Graphics.InterpolationMode = InterpolationMode.Low;
-            e.Graphics.ScaleTransform(this._bgZoom, this._bgZoom);
-            e.Graphics.DrawImage(CurrentData.BgImage, this._bgImgx, this._bgImgy);
+            NBgWidth = (BgWidth * this._bgZoom);
+            NBgHeight = ((BgHeight / (float) BgWidth) * NBgWidth);
+
+            e.Graphics.DrawImage(CurrentData.BgImage, (int) this._bgImgx, (int) this._bgImgy, (int) NBgWidth,
+                (int) NBgHeight);
 
             labelControl1.Text = "X: " + this._bgImgx + " Y: " + this._bgImgy;
         }
@@ -549,139 +647,81 @@ namespace LaserMarker
 
         private void MunisBtn_Click(object sender, EventArgs e)
         {
-            Scale(e, ScaleMode.Minus, ScalePMCenter.Minus);
+            Scale(ScaleMode.Minus);
         }
 
         private void PlusBtn_Click(object sender, EventArgs e)
         {
-            Scale(e, ScaleMode.Plus, ScalePMCenter.Plus);
+            Scale(ScaleMode.Plus);
         }
 
         #endregion Minus/Plus Event
 
-        private void Scale(EventArgs e, ScaleMode scaleMode, ScalePMCenter centerPanel)
+        private void Scale(ScaleMode scaleMode)
         {
-            if (!(e is MouseEventArgs mouse))
-            {
-                return;
-            }
-
-            var mousePosNow = mouse.Location;
-
-            float oldZoom;
-            int x;
-            int y;
-            int oldImageX;
-            int oldImageY;
-            int newImageX;
-            int newImageY;
+            float oldimagex = 0;
+            float oldimagey = 0;
 
             if (this.bgCheckBox.Checked)
             {
-                oldZoom = this._bgZoom;
+                float oldzoom = this._bgZoom;
 
-                if (centerPanel == ScalePMCenter.Plus)
+                int x = this.panel1.Width / 2 - (int) this._bgImgx;
+                int y = this.panel1.Height / 2 - (int) this._bgImgy;
+
+
+                if (scaleMode == ScaleMode.Plus)
                 {
-                    this._bgZoom += this._bgZoom / 100f * 2f;
-                }
-                else if (centerPanel == ScalePMCenter.Minus)
-                {
-                    this._bgZoom -= this._bgZoom / 100f * 2f;
-                }
-                else
-                {
-                    switch (scaleMode)
-                    {
-                        case ScaleMode.Plus:
-                            this._bgZoom += this._bgZoom / 100f * 5f;
-                            break;
-                        case ScaleMode.Minus:
-                            this._bgZoom -= this._bgZoom / 100f * 5f;
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException(nameof(scaleMode), scaleMode, null);
-                    }
+                    this._bgZoom = (float) (this._bgZoom * 1.1);
+                    oldimagex = (float) (x - (x * 1.1));
+                    oldimagey = (float) (y - (y * 1.1));
                 }
 
-                if (centerPanel == ScalePMCenter.Plus || centerPanel == ScalePMCenter.Minus)
+                else if (scaleMode == ScaleMode.Minus)
                 {
-                    x = this.panel1.Width / 2;
-                    y = this.panel1.Height / 2;
-                }
-                else
-                {
-                    // Where location of the mouse in the pictureframe
-                    x = mousePosNow.X - backgroundPictureBox.Location.X;
-                    y = mousePosNow.Y - this.backgroundPictureBox.Location.Y;
+                    this._bgZoom = (float) (this._bgZoom / 1.1);
+                    oldimagex = (float) (x - (x / 1.1));
+                    oldimagey = (float) (y - (y / 1.1));
                 }
 
-                // Where in the IMAGE is it now
-                oldImageX = (int) (x / oldZoom);
-                oldImageY = (int) (y / oldZoom);
 
-                // Where in the IMAGE will it be when the new zoom i made
-                newImageX = (int) (x / this._bgZoom);
-                newImageY = (int) (y / this._bgZoom);
+                this._bgImgx += oldimagex;
+                this._bgImgy += oldimagey;
 
-                // Where to move image to keep focus on one point
-                this._bgImgx = newImageX - oldImageX + this._bgImgx;
-                this._bgImgy = newImageY - oldImageY + this._bgImgy;
-
-                // calls imageBox_Paint
-                this.backgroundPictureBox.Refresh();
+                backgroundPictureBox.Refresh();
             }
 
-            if (!this.fgCheckBox.Checked)
+            if (this.fgCheckBox.Checked)
             {
-                return;
-            }
+                float oldzoom = this._fgZoom;
 
-            oldZoom = this._fgZoom;
+                int x = this.panel1.Width / 2 - (int) this._fgImgx;
+                int y = this.panel1.Height / 2 - (int) this._fgImgy;
 
-            if (centerPanel == ScalePMCenter.Plus)
-            {
-                this._fgZoom += this._fgZoom / 100f * 2f;
-            }
-            else if (centerPanel == ScalePMCenter.Minus)
-            {
-                this._fgZoom -= this._fgZoom / 100f * 2f;
-            }
-            else
-            {
-                switch (scaleMode)
+
+                if (scaleMode == ScaleMode.Plus)
                 {
-                    case ScaleMode.Plus:
-                        this._fgZoom += this._fgZoom / 100f * 5f;
-                        break;
-                    case ScaleMode.Minus:
-                        this._fgZoom -= this._fgZoom / 100f * 5f;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(scaleMode), scaleMode, null);
+                    this._fgZoom = (float) (this._fgZoom * 1.1);
+
+                    oldimagex = (float) (x - (x * 1.1));
+                    oldimagey = (float) (y - (y * 1.1));
                 }
+
+                else if (scaleMode == ScaleMode.Minus)
+                {
+                    if (ezdWidth > 10 && ezdHeight > 10)
+                        this._fgZoom = (float) (this._fgZoom / 1.1);
+
+                    oldimagex = (float) (x - (x / 1.1));
+                    oldimagey = (float) (y - (y / 1.1));
+                }
+
+
+                this._fgImgx += oldimagex;
+                this._fgImgy += oldimagey;
+
+                foregroundPictureBox.Refresh();
             }
-
-            if (centerPanel == ScalePMCenter.Plus || centerPanel == ScalePMCenter.Minus)
-            {
-                x = this.panel1.Width / 2;
-                y = this.panel1.Height / 2;
-            }
-            else
-            {
-                x = mousePosNow.X - this.foregroundPictureBox.Location.X;
-                y = mousePosNow.Y - this.foregroundPictureBox.Location.Y;
-            }
-
-            oldImageX = (int) (x / oldZoom);
-            oldImageY = (int) (y / oldZoom);
-
-            newImageX = (int) (x / this._fgZoom);
-            newImageY = (int) (y / this._fgZoom);
-
-            this._fgImgx = newImageX - oldImageX + this._fgImgx;
-            this._fgImgy = newImageY - oldImageY + this._fgImgy;
-
-            this.foregroundPictureBox.Refresh();
         }
 
         #endregion Picturebox
@@ -767,28 +807,42 @@ namespace LaserMarker
 
         private void SaveBtn_Click(object sender, EventArgs e)
         {
-            if (CurrentData.BgImage != null && CurrentData.EzdImage != null)
+            try
             {
-                if (this._currentPEindex < 10)
+                if (CurrentData.BgImage != null && CurrentData.EzdImage != null)
                 {
-                    if (CurrentData.EzdImage != null)
+                    if (this._currentPEindex < 10)
                     {
-                        this.OpenPreview();
+                        if (CurrentData.EzdImage != null)
+                        {
+                            if (CurrentData.Preview != null)
+                            {
+                                this.OpenPreview();
+
+                                CurrentData.Preview.showEzd = false;
+
+                                CurrentData.Preview.RefreshEzd();
+                            }
+                        }
+
+                        CurrentData.FullImageName = $@"FullImage{DateTime.Now.Ticks}.jpg";
+
+                        CurrentData.FullImage = this.panel1.ToImage();
+
+                        this.SaveImageDB();
+
+                        this.UpdateTopPictures();
                     }
-
-                    CurrentData.FullImageName = $@"FullImage{DateTime.Now.Ticks}.jpg";
-
-                    CurrentData.FullImage = this.panel1.ToImage();
-
-                    this.SaveImageDB();
-
-                    this.UpdateTopPictures();
+                }
+                else
+                {
+                    XtraMessageBox.Show("Выберите обложку или ezd файл", "Error", MessageBoxButtons.OK);
                 }
             }
-            else
+            catch (Exception )
             {
-                XtraMessageBox.Show("Выберите обложку или ezd файл", "Error", MessageBoxButtons.OK);
             }
+
         }
 
         private void UpdateTopPictures()
@@ -832,12 +886,12 @@ namespace LaserMarker
                     EzdImageName = CurrentData.EzdName,
                     FullImageName = CurrentData.FullImageName,
                     FullImage = CurrentData.FullImage.ToBytes(),
-                    BgImagePosX = this._bgImgx,
-                    BgImagePosY = this._bgImgy,
+                    BgImagePosX = (long) this._bgImgx,
+                    BgImagePosY = (long) this._bgImgy,
                     BgImageScale = this._bgZoom,
                     EzdImageScale = this._fgZoom,
-                    EzdImagePosX = this._fgImgx,
-                    EzdImagePosY = this._fgImgy
+                    EzdImagePosX = (long) this._fgImgx,
+                    EzdImagePosY = (long) this._fgImgy
                 });
         }
 
@@ -887,27 +941,41 @@ namespace LaserMarker
 
         private void TopPictureEdits_Click(object sender, EventArgs e)
         {
-            var picture = (PictureEdit) sender;
-
-            this._currentPEindex = picture.TabIndex - 40;
-
-            if ((string) picture.Tag == @"filled")
+            try
             {
-                if (!picture.Properties.ReadOnly)
+                var picture = (PictureEdit)sender;
+
+                this._currentPEindex = picture.TabIndex - 40;
+
+                if ((string)picture.Tag == @"filled")
                 {
-                    var userDto = UserDataRepository.GetByTabIndex(this._currentPEindex);
+                    if (!picture.Properties.ReadOnly)
+                    {
+                        var userDto = UserDataRepository.GetByTabIndex(this._currentPEindex);
 
-                    this.UpdateImageFromDb(userDto);
+                        this.UpdateImageFromDb(userDto);
 
-                    this.foregroundPictureBox.Refresh();
+                        this.foregroundPictureBox.Refresh();
 
-                    this.backgroundPictureBox.Refresh();
+                        this.backgroundPictureBox.Refresh();
+                    }
+                }
+
+                if (CurrentData.EzdImage != null)
+                {
+                    if (CurrentData.Preview != null)
+                    {
+                        this.OpenPreview();
+
+                        CurrentData.Preview.showEzd = false;
+
+                        CurrentData.Preview.RefreshEzd();
+                    }
                 }
             }
-
-            if (CurrentData.EzdImage != null)
+            catch (Exception)
             {
-                this.OpenPreview();
+                return;
             }
         }
 
@@ -973,21 +1041,35 @@ namespace LaserMarker
             }
         }
 
-        private void OpenPreview()
+        public void OpenPreview()
         {
             // Screen preview
             if (Screen.AllScreens.Length > 1)
             {
                 if (CurrentData.Preview == null)
                 {
-                    //CurrentData.Preview?.Close();
+                    CurrentData.Preview?.Close();
 
-                    CurrentData.Preview = new Preview(this._bgZoom, this._fgZoom, this._bgImgx, this._bgImgy, this._fgImgx, this._fgImgy);
+                    CurrentData.Preview = new Preview(this.panel1.Size, this._bgZoom, this._fgZoom, this._bgImgx,
+                        this._bgImgy, this._fgImgx, this._fgImgy, this.BgHeight, this.BgWidth, this.ezdHeight,
+                        this.ezdWidth);
+
+                    CurrentData.Preview.showEzd = false;
+
+                    CurrentData.Preview.RefreshEzd();
 
                     CurrentData.Preview.Show();
                 }
+                else
+                {
+                    CurrentData.Preview.showEzd = true;
 
-                CurrentData.Preview.UpdateImage(this._bgZoom, this._fgZoom, this._bgImgx, this._bgImgy, this._fgImgx, this._fgImgy);
+                    CurrentData.Preview.RefreshEzd();
+
+                    CurrentData.Preview.UpdateImage(this.panel1.Size, this._bgZoom, this._fgZoom, this._bgImgx,
+                        this._bgImgy, this._fgImgx, this._fgImgy, this.BgHeight, this.BgWidth, this.ezdHeight,
+                        this.ezdWidth);
+                }
             }
         }
 

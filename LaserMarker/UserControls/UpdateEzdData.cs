@@ -1,4 +1,10 @@
-﻿namespace LaserMarker.UserControls
+﻿using System.Threading.Tasks;
+using DevExpress.Utils.Extensions;
+using DevExpress.XtraLayout;
+using Telerik.WinControls.UI;
+using static System.Threading.Tasks.Task;
+
+namespace LaserMarker.UserControls
 {
     using BLL;
     using System;
@@ -9,22 +15,19 @@
     using System.Text;
     using System.Threading;
     using System.Windows.Forms;
-
     using DevExpress.XtraEditors;
-
     using EzdDataControl;
-
     using global::LaserMarker.State;
 
     public partial class UpdateEzdData : XtraUserControl
     {
-        List<TextEdit> textEdits = new List<TextEdit>();
+        private readonly List<Tuple<string, StringBuilder>> _competitor;
 
-        List<Tuple<string, StringBuilder>> _competitor;
+        bool _doWorkRun = false;
 
-        bool doWorkRun = false;
+        bool _doWorkTest = false;
 
-        bool doWorkTest = false;
+        private bool _initRun = false;
 
         public UpdateEzdData(List<Tuple<string, StringBuilder>> competitor)
         {
@@ -35,141 +38,14 @@
 
             InitializeComponent();
 
-            try
-            {
-                this.flyoutPanel1.OwnerControl = CurrentUIData.RightLayoutControl;
+            this.flyoutPanel1.OwnerControl = CurrentUIData.RightLayoutControl;
 
-                this.flyoutPanel1.MaximumSize = CurrentUIData.RightPanelSize;
-                this.flyoutPanel1.MinimumSize = CurrentUIData.RightPanelSize;
+            this.flyoutPanel1.MaximumSize = CurrentUIData.RightPanelSize;
+            this.flyoutPanel1.MinimumSize = CurrentUIData.RightPanelSize;
 
-                this.flyoutPanel1.ShowPopup();
+            this.flyoutPanel1.ShowPopup();
 
-                // Text
-                var textEditSize = new Size();
-                textEditSize.Height = 40 - 5;
-                textEditSize.Width = this.Width - (int)(this.Width / 2.5) - 5;
-
-                // Text`s layout
-                var middlelayoutItemSize = new Size();
-                middlelayoutItemSize.Height = 40;
-                middlelayoutItemSize.Width = this.Width - (int)(this.Width / 2.5);
-
-                // Button`s layout
-                var layoutItemSize = new Size();
-                layoutItemSize.Height = 40;
-                layoutItemSize.Width = 42;
-
-                for (int i = 60 + competitor.Count; i <= 67; i++)
-                {
-                    var textEdit = this.layoutControl2.Controls.OfType<TextEdit>()
-                        .Where(c => c.TabIndex == i)
-                        .Select(c => c)
-                        .First();
-
-                    textEdit.BackColor = Color.FromArgb(240, 240, 240);
-                }
-
-                for (int index = 60; index < (60 + competitor.Count); index++)
-                {
-                    #region Initial TextEdits
-
-                    var textEdit = this.layoutControl2.Controls.OfType<TextEdit>()
-                        .Where(c => c.TabIndex == index)
-                        .Select(c => c)
-                        .First();
-
-                    textEdit.Text = competitor[index - 60].Item2.ToString();
-
-                    textEdit.MinimumSize = textEditSize;
-                    textEdit.MaximumSize = textEditSize;
-                    textEdit.Size = textEditSize;
-
-                    textEdit.Properties.NullText = competitor[index - 60].Item1;
-
-                    textEdits.Add(textEdit);
-
-                    #endregion
-
-                    #region Initial TextEditLayout
-
-                    var layoutItem = layoutControlGroup3.Items
-                        .Where(p =>
-                        {
-                            if (p.Tag != null)
-                            {
-                                p.Tag = Convert.ToString(p.Tag);
-
-                                string layout_index = index.ToString();
-
-                                bool tag = (string)p.Tag == layout_index;
-
-                                return tag;
-                            }
-                            return false;
-                        })
-                        .Select(c => c)
-                        .First();
-
-                    layoutItem.MaxSize = middlelayoutItemSize;
-                    layoutItem.MinSize = middlelayoutItemSize;
-                    layoutItem.Size = middlelayoutItemSize;
-
-                    #endregion
-
-                    #region Initial Button`s layouts
-
-                    var pluslayout = layoutControlGroup3.Items
-                        .Where(p =>
-                        {
-                            if (p.Tag != null)
-                            {
-                                p.Tag = Convert.ToString(p.Tag);
-
-                                string layout_index = (index + 40).ToString();
-
-                                bool tag = (string)p.Tag == layout_index;
-
-                                return tag;
-                            }
-                            return false;
-                        })
-                        .Select(c => c)
-                        .First();
-
-                    var minuslayout = layoutControlGroup3.Items
-                        .Where(p =>
-                        {
-                            if (p.Tag != null)
-                            {
-                                p.Tag = Convert.ToString(p.Tag);
-
-                                string layout_index = (index + 50).ToString();
-
-                                bool tag = (string)p.Tag == layout_index;
-
-                                return tag;
-                            }
-                            return false;
-                        })
-                        .Select(c => c)
-                        .First();
-
-                    pluslayout.MaxSize = layoutItemSize;
-                    pluslayout.MinSize = layoutItemSize;
-                    pluslayout.Size = layoutItemSize;
-
-                    minuslayout.MaxSize = layoutItemSize;
-                    minuslayout.MinSize = layoutItemSize;
-                    minuslayout.Size = layoutItemSize;
-
-                    #endregion
-                }
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
+            ElementCreator();
         }
 
         #region Plus and Minus btn click event
@@ -183,6 +59,8 @@
             CurrentData.EzdImage = Images.MakeImageTransparent(img);
 
             CurrentData.EzdPictureBox.Refresh();
+
+            LaserMarker.laserMarker.OpenPreview();
         }
 
         private void obj1PlusBtn_Click(object sender, EventArgs e)
@@ -274,6 +152,9 @@
 
         private void obj1TextEdit_TextChanged(object sender, EventArgs e)
         {
+            //if (!_initRun) 
+            //    return;
+
             try
             {
                 var text = (TextEdit)sender;
@@ -281,8 +162,10 @@
                 var comp = new Tuple<string, string>(text.Properties.NullText, text.Text);
 
                 CurrentData.EzdImage = ReopositoryEzdFile.UpdateCustomEzd(comp);
-                
+
                 CurrentData.EzdPictureBox.Refresh();
+
+                LaserMarker.laserMarker.OpenPreview();
             }
             catch (Exception)
             {
@@ -292,18 +175,19 @@
 
         private void RunBtn_Click(object sender, EventArgs e)
         {
-            var btn = (SimpleButton)sender;
+            var btn = (SimpleButton) sender;
 
-            if (doWorkTest)
+            if (_doWorkTest)
             {
-                doWorkTest = false;
+                _doWorkTest = false;
             }
 
             if (btn.Text == "RUN")
             {
-                if (XtraMessageBox.Show("Вы действительно хотите гравировать?", "Сообщения", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                if (XtraMessageBox.Show("Вы действительно хотите гравировать?", "Сообщения", MessageBoxButtons.YesNo) ==
+                    DialogResult.Yes)
                 {
-                    doWorkRun = true;
+                    _doWorkRun = true;
 
                     if (!runBackgroundWorker.IsBusy)
                     {
@@ -323,7 +207,7 @@
             }
             else
             {
-                doWorkRun = false;
+                _doWorkRun = false;
 
                 ReopositoryEzdFile.StopMark();
                 btn.Text = "RUN";
@@ -333,44 +217,52 @@
 
                 this.testBtn.Appearance.BackColor = Color.LightSalmon;
 
-                
+
                 this.testBtn.Cursor = Cursors.No;
             }
         }
 
         private void RunBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (doWorkRun)
+            try
             {
-                ReopositoryEzdFile.Mark();
+                if (_doWorkRun)
+                {
+                    ReopositoryEzdFile.Mark();
+                }
+
+                if (!ReopositoryEzdFile.IsMarking())
+                {
+                    _doWorkRun = false;
+                    this.testBtn.Tag = "redMarkContour";
+
+                    this.testBtn.Enabled = true;
+
+                    this.testBtn.Appearance.BackColor = Color.FromArgb(192, 0, 0);
+
+                    this.testBtn.Cursor = Cursors.Hand;
+
+                    this.runBtn.Text = "RUN";
+                    this.runBtn.Appearance.BackColor = Color.FromArgb(0, 192, 192);
+                }
             }
-
-            if (!ReopositoryEzdFile.IsMarking())
+            catch (Exception)
             {
-                doWorkRun = false;
-                this.testBtn.Tag = "redMarkContour";
-
-                this.testBtn.Enabled = true;
-
-                this.testBtn.Appearance.BackColor = Color.FromArgb(192, 0, 0);
-
-                this.testBtn.Cursor = Cursors.Hand;
-
-                this.runBtn.Text = "RUN";
-                this.runBtn.Appearance.BackColor = Color.FromArgb(0, 192, 192);
+                return;
             }
         }
 
         private void TestBtn_Click(object sender, EventArgs e)
         {
-            var btn = (SimpleButton)sender;
+            var btn = (SimpleButton) sender;
             try
             {
-                if (doWorkRun)
+                if (_doWorkRun)
                 {
-                    if (XtraMessageBox.Show("Вы действительно хотите простановить гравировку?", "Сообщения", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    if (XtraMessageBox.Show("Вы действительно хотите простановить гравировку?", "Сообщения",
+                        MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
-                        doWorkRun = false;
+                        _doWorkRun = false;
                     }
                     else
                     {
@@ -380,7 +272,7 @@
 
                 if (btn.Text == "TEST")
                 {
-                    doWorkTest = true;
+                    _doWorkTest = true;
 
                     if (btn.Tag.ToString() == "redMark")
                     {
@@ -406,7 +298,7 @@
                 }
                 else if (btn.Text == "STOP TEST")
                 {
-                    doWorkTest = false;
+                    _doWorkTest = false;
 
                     if (btn.Tag.ToString() == "redMark")
                     {
@@ -416,6 +308,7 @@
                     {
                         testRedMarkContourBackgroundWorker.WorkerSupportsCancellation = true;
                     }
+
                     btn.BackColor = Color.FromArgb(0, 192, 192);
                     btn.Text = "TEST";
                 }
@@ -426,9 +319,9 @@
             }
         }
 
-        private void TestRedMarkBackgroundWorkerr_DoWork(object sender, DoWorkEventArgs e)
+        private void TestRedMarkBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            while (doWorkTest)
+            while (_doWorkTest)
             {
                 Thread.Sleep(100);
                 ReopositoryEzdFile.RedMark();
@@ -437,11 +330,108 @@
 
         private void TestRedMarkContourBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            while (doWorkTest)
+            while (_doWorkTest)
             {
                 Thread.Sleep(100);
                 ReopositoryEzdFile.RedMarkContour();
             }
+        }
+
+        private void ElementCreator()
+        {
+            _initRun = false;
+            try
+            {
+                var competitorCount = 60 + _competitor.Count;
+                // Text
+                var textEditSize = new Size
+                {
+                    Height = 40 - 5,
+                    Width = this.Width - (int)(this.Width / 2.5) - 5
+                };
+
+                // Text`s layout
+                var middleLayoutItemSize = new Size
+                {
+                    Height = 40,
+                    Width = this.Width - (int)(this.Width / 2.5)
+                };
+
+                // Button`s layout
+                var layoutItemSize = new Size
+                {
+                    Height = 40,
+                    Width = 42
+                };
+
+                var textEdits = this.layoutControl2.Controls
+                    .OfType<TextEdit>();
+
+                var textEditsList = textEdits as TextEdit[] ?? textEdits.ToArray();
+                var stop = new System.Diagnostics.Stopwatch();
+
+                Parallel.ForEach(source: textEditsList, body: item =>
+                {
+                    _ = item.BeginInvoke(method: new Action(() =>
+                    {
+                        if (item.TabIndex >= competitorCount && item.TabIndex <= 67)
+                            item.BackColor = Color.FromArgb(red: 240, green: 240, blue: 240);
+
+                        if (item.TabIndex < competitorCount)
+                        {
+                            var text = _competitor[index: item.TabIndex - 60].Item2.ToString();
+                            item.Text = text;
+
+                            item.MinimumSize = textEditSize;
+                            item.MaximumSize = textEditSize;
+                            item.Size = textEditSize;
+
+                            item.Properties.NullText = _competitor[index: item.TabIndex - 60].Item1;
+                        }
+                    }));
+                });
+
+                var control = this.layoutControlGroup3.Items.AsParallel();
+
+                control.ForAll(item =>
+                {
+                    this.flyoutPanel1.BeginInvoke(new Action(() =>
+                    {
+                        if (item?.Tag == null)
+                            return;
+
+                        var tag = Convert.ToInt16(value: item.Tag);
+
+                        if (tag >= 60 && tag < competitorCount)
+                        {
+                            item.MaxSize = middleLayoutItemSize;
+                            item.MinSize = middleLayoutItemSize;
+                            item.Size = middleLayoutItemSize;
+                        }
+
+                        if ((tag - 40 >= 60 && tag - 40 < competitorCount) ||
+                            (tag - 50 >= 60 && tag - 50 < competitorCount))
+                        {
+                            item.MaxSize = layoutItemSize;
+                            item.MinSize = layoutItemSize;
+                            item.Size = layoutItemSize;
+                        }
+
+                        return;
+                    }));
+
+                });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        private void UpdateEzdData_Load(object sender, EventArgs e)
+        {
+            _initRun = true;
         }
     }
 }

@@ -14,7 +14,7 @@ namespace LaserMarker.UserControls
     {
         public static Competitors _competitors;
 
-        public Competitors _tempCompetitors;
+        private static bool switchList = false;
 
         public static string _searchText;
 
@@ -48,10 +48,9 @@ namespace LaserMarker.UserControls
 
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            if (_competitors != null)
+            if (switchList)
             {
-                if (_tempCompetitors == null ||
-                    !_tempCompetitors.CompetitorList.SequenceEqual(_competitors.CompetitorList))
+                if (_competitors != null)
                 {
                     if (this.listView11.InvokeRequired)
                     {
@@ -74,7 +73,7 @@ namespace LaserMarker.UserControls
                                         foreach (var key in dictionary.Keys)
                                         {
                                             columns.Add(new ColumnHeader()
-                                                {Text = key, Width = this.listView11.Width / 100 * 20});
+                                                { Text = key, Width = this.listView11.Width / 100 * 20 });
                                         }
 
                                     this.listView11.Columns.AddRange(columns.ToArray());
@@ -91,11 +90,11 @@ namespace LaserMarker.UserControls
                             {
                                 this.searchControl.Text = _searchText;
                             }
-
-                            _tempCompetitors = _competitors;
                         }));
                     }
                 }
+
+                switchList = false;
             }
         }
 
@@ -113,6 +112,8 @@ namespace LaserMarker.UserControls
             _competitors.CompetitorList = searchedCompetitorList;
 
             _searchText = searchControlText;
+
+            switchList = true;
         }
     }
 }

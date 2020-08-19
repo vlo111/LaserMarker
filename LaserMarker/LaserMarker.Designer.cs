@@ -78,6 +78,7 @@
             this.foregroundPictureBox = new System.Windows.Forms.PictureBox();
             this.backgroundPictureBox = new System.Windows.Forms.PictureBox();
             this.layoutControl2 = new DevExpress.XtraLayout.LayoutControl();
+            this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
             this.pictureEdit2 = new DevExpress.XtraEditors.PictureEdit();
             this.pictureEdit3 = new DevExpress.XtraEditors.PictureEdit();
             this.pictureEdit4 = new DevExpress.XtraEditors.PictureEdit();
@@ -101,7 +102,6 @@
             this.layoutControlItem25 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem26 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem16 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
             this.layoutControlItem28 = new DevExpress.XtraLayout.LayoutControlItem();
             this.rightpanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rightLayoutControl)).BeginInit();
@@ -779,6 +779,15 @@
             this.layoutControl2.TabIndex = 2;
             this.layoutControl2.Text = "layoutControl2";
             // 
+            // labelControl1
+            // 
+            this.labelControl1.Location = new System.Drawing.Point(12, 684);
+            this.labelControl1.Name = "labelControl1";
+            this.labelControl1.Size = new System.Drawing.Size(87, 13);
+            this.labelControl1.StyleController = this.layoutControl2;
+            this.labelControl1.TabIndex = 50;
+            this.labelControl1.Text = "labelControl1www";
+            // 
             // pictureEdit2
             // 
             this.pictureEdit2.Location = new System.Drawing.Point(12, 35);
@@ -1104,15 +1113,6 @@
             this.layoutControlItem16.Size = new System.Drawing.Size(652, 581);
             this.layoutControlItem16.TextSize = new System.Drawing.Size(0, 0);
             this.layoutControlItem16.TextVisible = false;
-            // 
-            // labelControl1
-            // 
-            this.labelControl1.Location = new System.Drawing.Point(12, 684);
-            this.labelControl1.Name = "labelControl1";
-            this.labelControl1.Size = new System.Drawing.Size(87, 13);
-            this.labelControl1.StyleController = this.layoutControl2;
-            this.labelControl1.TabIndex = 50;
-            this.labelControl1.Text = "labelControl1www";
             // 
             // layoutControlItem28
             // 

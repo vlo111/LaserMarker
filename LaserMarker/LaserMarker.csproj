@@ -50,11 +50,14 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="EntityFrameworkSql, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Release\EntityFrameworkSql.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite, Version=1.0.113.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
@@ -72,28 +75,14 @@
       <HintPath>..\lib\RCWF\2019.2.618.40\Telerik.WinControls.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Telerik.WinControls.Themes.Crystal, Version=2019.2.618.40, Culture=neutral, PublicKeyToken=5bb2a467cbec794e, processorArchitecture=MSIL">
-      <HintPath>..\lib\RCWF\2019.2.618.40\Telerik.WinControls.Themes.Crystal.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Telerik.WinControls.UI, Version=2019.2.618.40, Culture=neutral, PublicKeyToken=5bb2a467cbec794e, processorArchitecture=MSIL">
       <HintPath>..\lib\RCWF\2019.2.618.40\Telerik.WinControls.UI.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="TelerikCommon, Version=2019.2.618.40, Culture=neutral, PublicKeyToken=5bb2a467cbec794e, processorArchitecture=MSIL">
-      <HintPath>..\lib\RCWF\2019.2.618.40\TelerikCommon.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomFlyoutDialog.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomMessage.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomMessage.Designer.cs">
-      <DependentUpon>CustomMessage.cs</DependentUpon>
     </Compile>
     <Compile Include="DataAccess\UserDataDto.cs" />
     <Compile Include="DataAccess\UserDataRepository.cs" />
@@ -144,9 +133,6 @@
     <Compile Include="UserControls\UpdateEzdDataFromApi.Designer.cs">
       <DependentUpon>UpdateEzdDataFromApi.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="CustomMessage.resx">
-      <DependentUpon>CustomMessage.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="LaserMarker.resx">
       <DependentUpon>LaserMarker.cs</DependentUpon>
     </EmbeddedResource>
@@ -201,17 +187,9 @@
       <Project>{e330087d-2ce1-4938-a5a0-05d0312bbb56}</Project>
       <Name>BLL</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EntityFrameworkSql\EntityFrameworkSql.csproj">
-      <Project>{14a3ee33-5691-450a-b4f3-f9ed908adeca}</Project>
-      <Name>EntityFrameworkSql</Name>
-    </ProjectReference>
     <ProjectReference Include="..\EzdDataControl\EzdDataControl.csproj">
       <Project>{97c2c79e-41b0-4b40-95fd-9a7116b9bdcc}</Project>
       <Name>EzdDataControl</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SDK\SDK.csproj">
-      <Project>{42E23EBF-26D8-40A8-A555-64CADDA29B8A}</Project>
-      <Name>SDK</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

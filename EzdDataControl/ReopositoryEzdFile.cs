@@ -205,12 +205,12 @@
             double maxy1 = 0;
 
             double dz1 = 0;
+
             JczLmc.GetEntSize(ezdObj, ref minx, ref miny, ref maxx, ref maxy, ref dz);
 
             JczLmc.ChangeTextByName(ezdObj, competitor[ezdObj]);
 
             JczLmc.GetEntSize(ezdObj, ref minx1, ref miny1, ref maxx1, ref maxy1, ref dz1);
-
 
             if ((maxx - minx) < (maxx1 - minx1))
             {
