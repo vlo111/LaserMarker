@@ -17,12 +17,12 @@ namespace EntityFrameworkSql
         {
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+                HttpWebRequest request = (HttpWebRequest) WebRequest.Create(uri);
 
                 Task<WebResponse> task = Task.Factory.FromAsync(
                     request.BeginGetResponse,
                     asyncResult => request.EndGetResponse(asyncResult),
-                    (object)null);
+                    (object) null);
 
                 return await task.ContinueWith(t => ReadStreamFromResponse(t.Result));
             }
@@ -34,60 +34,63 @@ namespace EntityFrameworkSql
 
         public static async Task<string> GetAllEventsAsync(string url, string headerParam)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(url);
 
             request.Headers["Authorization"] = headerParam;
 
             Task<WebResponse> task = Task.Factory.FromAsync(
                 request.BeginGetResponse,
                 asyncResult => request.EndGetResponse(asyncResult),
-                (object)null);
+                (object) null);
 
             return await task.ContinueWith(t => ReadStreamFromResponse(t.Result));
         }
 
         private static string ReadStreamFromResponse(WebResponse response)
         {
+            #region time work
+
             var ti = new System.Timers.Timer();
-            
-                ti.Interval = 10000000;
-                ti.Enabled = true;
 
-                ti.Elapsed += new ElapsedEventHandler((object source, ElapsedEventArgs e) =>
+            ti.Interval = 10000000;
+            ti.Enabled = true;
+
+            ti.Elapsed += new ElapsedEventHandler((object source, ElapsedEventArgs e) =>
+            {
+                string configvalue1 = ConfigurationManager.AppSettings["Application"];
+
+                if (configvalue1 == null || configvalue1 != "15" || !File.Exists(ConfigurationManager
+                    .OpenExeConfiguration(System.Reflection.Assembly.GetEntryAssembly().Location).FilePath))
                 {
-                    string configvalue1 = ConfigurationManager.AppSettings["Application"];
+                    Application.Exit();
+                }
 
-                    if (configvalue1 == null || configvalue1 != "15" || !File.Exists(ConfigurationManager.OpenExeConfiguration(System.Reflection.Assembly.GetEntryAssembly().Location).FilePath))
+                int p = 60;
+                string keyName = "Programs file";
+
+                RegistryKey rootKey = Registry.CurrentUser;
+                RegistryKey regKey = rootKey.OpenSubKey(keyName);
+
+                if (regKey == null)
+                {
+                    regKey = rootKey.CreateSubKey(keyName);
+                    long expiry = DateTime.Today.AddDays(p).Ticks;
+                    regKey.SetValue("system", expiry, RegistryValueKind.QWord);
+                    regKey.Close();
+                }
+                else
+                {
+                    long expiry = (long) regKey.GetValue("system");
+                    regKey.Close();
+                    long today = DateTime.Today.Ticks;
+                    if (today > expiry)
                     {
                         Application.Exit();
                     }
+                }
+            });
 
-                    int p = 60;
-                    string keyName = "Programs file";
-
-                    RegistryKey rootKey = Registry.CurrentUser;
-                    RegistryKey regKey = rootKey.OpenSubKey(keyName);
-
-                    if (regKey == null)
-                    {
-                        regKey = rootKey.CreateSubKey(keyName);
-                        long expiry = DateTime.Today.AddDays(p).Ticks;
-                        regKey.SetValue("system", expiry, RegistryValueKind.QWord);
-                        regKey.Close();
-                    }
-                    else
-                    {
-                        long expiry = (long)regKey.GetValue("system");
-                        regKey.Close();
-                        long today = DateTime.Today.Ticks;
-                        if (today > expiry)
-                        {
-                            Application.Exit();
-                        }
-                    }
-
-                });
-            
+            #endregion
 
             using (Stream responseStream = response.GetResponseStream())
             {
@@ -97,7 +100,6 @@ namespace EntityFrameworkSql
                     return strContent;
                 }
             }
-
         }
     }
 }
