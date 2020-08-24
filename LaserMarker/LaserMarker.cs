@@ -22,6 +22,7 @@ namespace LaserMarker
     public partial class LaserMarker : Form
     {
         public static LaserMarker laserMarker;
+
         #region Path Field
 
         private readonly string iconPath = Directory.GetCurrentDirectory() + @"\icon\";
@@ -173,9 +174,9 @@ namespace LaserMarker
                     {
                         this.InitialCurrentDataFromUser(currentData);
 
-                        this.CreateBgPictureBoxImage();
+                        this.CreateBgPictureBoxImage(false);
 
-                        this.CreateEzdPictureBoxImage();
+                        this.CreateEzdPictureBoxImage(false);
                     }
                 }
             }
@@ -223,7 +224,7 @@ namespace LaserMarker
 
         private void InitialCurrentDataFromUser(UserDataDto currentData)
         {
-            this._currentPEindex = (int) currentData.Sequence;
+            this._currentPEindex = (int)currentData.Sequence;
 
             this.UpdateImageFromDb(currentData);
 
@@ -314,7 +315,7 @@ namespace LaserMarker
 
         #region Create image for PictureBox
 
-        private void CreateEzdPictureBoxImage()
+        private void CreateEzdPictureBoxImage(bool switchZoom)
         {
             if (CurrentData.EzdImage == null)
             {
@@ -325,18 +326,20 @@ namespace LaserMarker
 
             ezdWidth = CurrentData.EzdImage.Width;
             ezdHeight = CurrentData.EzdImage.Height;
+            if (switchZoom)
+            {
+                this._fgZoom = (this.foregroundPictureBox.Width / (float)CurrentData.EzdImage.Width)
+                               * (CurrentData.EzdImage.HorizontalResolution / fg.DpiX);
 
-            this._fgZoom = (this.foregroundPictureBox.Width / (float)CurrentData.EzdImage.Width)
-                           * (CurrentData.EzdImage.HorizontalResolution / fg.DpiX);
-            //Выставлем по центру
-            this._fgImgx = (foregroundPictureBox.Width / 2) - ((int) (ezdWidth * this._fgZoom) / 2);
+                //Выставлем по центру
+                this._fgImgx = (foregroundPictureBox.Width / 2) - ((int)(ezdWidth * this._fgZoom) / 2);
                 this._fgImgy = 0;
-
+            }
 
             this.foregroundPictureBox.Refresh();
         }
 
-        private void CreateBgPictureBoxImage()
+        private void CreateBgPictureBoxImage(bool switchZoom)
         {
             if (CurrentData.BgImage == null)
             {
@@ -349,11 +352,15 @@ namespace LaserMarker
             BgWidth = CurrentData.BgImage.Width;
             BgHeight = CurrentData.BgImage.Height;
 
-            this._bgZoom = (this.backgroundPictureBox.Width / (float)CurrentData.BgImage.Width)
-                           * (CurrentData.BgImage.HorizontalResolution / g.DpiX);
+            if (switchZoom)
+            {
+                this._bgZoom = (this.backgroundPictureBox.Width / (float)CurrentData.BgImage.Width)
+                               * (CurrentData.BgImage.HorizontalResolution / g.DpiX);
+
                 //Выставлем по центру
-            this._bgImgy = (backgroundPictureBox.Height / 2) - ((int) (BgHeight * this._bgZoom) / 2);
+                this._bgImgy = (backgroundPictureBox.Height / 2) - ((int)(BgHeight * this._bgZoom) / 2);
                 this._bgImgx = 0;
+            }
 
             this.backgroundPictureBox.Refresh();
         }
@@ -380,32 +387,32 @@ namespace LaserMarker
                 switch (keyData)
                 {
                     case Keys.Right:
-                        this._bgImgx -= (int) (this.backgroundPictureBox.Width * 0.03F / this._bgZoom);
+                        this._bgImgx -= (int)(this.backgroundPictureBox.Width * 0.03F / this._bgZoom);
                         this.backgroundPictureBox.Refresh();
                         break;
 
                     case Keys.Left:
-                        this._bgImgx += (int) (this.backgroundPictureBox.Width * 0.03F / this._bgZoom);
+                        this._bgImgx += (int)(this.backgroundPictureBox.Width * 0.03F / this._bgZoom);
                         this.backgroundPictureBox.Refresh();
                         break;
 
                     case Keys.Down:
-                        this._bgImgy -= (int) (this.backgroundPictureBox.Height * 0.03F / this._bgZoom);
+                        this._bgImgy -= (int)(this.backgroundPictureBox.Height * 0.03F / this._bgZoom);
                         this.backgroundPictureBox.Refresh();
                         break;
 
                     case Keys.Up:
-                        this._bgImgy += (int) (this.backgroundPictureBox.Height * 0.03F / this._bgZoom);
+                        this._bgImgy += (int)(this.backgroundPictureBox.Height * 0.03F / this._bgZoom);
                         this.backgroundPictureBox.Refresh();
                         break;
 
                     case Keys.PageDown:
-                        this._bgImgy -= (int) (this.backgroundPictureBox.Height * 0.20F / this._bgZoom);
+                        this._bgImgy -= (int)(this.backgroundPictureBox.Height * 0.20F / this._bgZoom);
                         this.backgroundPictureBox.Refresh();
                         break;
 
                     case Keys.PageUp:
-                        this._bgImgy += (int) (this.backgroundPictureBox.Height * 0.20F / this._bgZoom);
+                        this._bgImgy += (int)(this.backgroundPictureBox.Height * 0.20F / this._bgZoom);
                         this.backgroundPictureBox.Refresh();
                         break;
                     case Keys.Oemplus:
@@ -425,32 +432,32 @@ namespace LaserMarker
             switch (keyData)
             {
                 case Keys.Right:
-                    this._fgImgx -= (int) (this.foregroundPictureBox.Width * 0.03F / this._fgZoom);
+                    this._fgImgx -= (int)(this.foregroundPictureBox.Width * 0.03F / this._fgZoom);
                     this.foregroundPictureBox.Refresh();
                     break;
 
                 case Keys.Left:
-                    this._fgImgx += (int) (this.foregroundPictureBox.Width * 0.03F / this._fgZoom);
+                    this._fgImgx += (int)(this.foregroundPictureBox.Width * 0.03F / this._fgZoom);
                     this.foregroundPictureBox.Refresh();
                     break;
 
                 case Keys.Down:
-                    this._fgImgy -= (int) (this.foregroundPictureBox.Height * 0.03F / this._fgZoom);
+                    this._fgImgy -= (int)(this.foregroundPictureBox.Height * 0.03F / this._fgZoom);
                     this.foregroundPictureBox.Refresh();
                     break;
 
                 case Keys.Up:
-                    this._fgImgy += (int) (this.foregroundPictureBox.Height * 0.03F / this._fgZoom);
+                    this._fgImgy += (int)(this.foregroundPictureBox.Height * 0.03F / this._fgZoom);
                     this.foregroundPictureBox.Refresh();
                     break;
 
                 case Keys.PageDown:
-                    this._fgImgy -= (int) (this.foregroundPictureBox.Height * 0.20F / this._fgZoom);
+                    this._fgImgy -= (int)(this.foregroundPictureBox.Height * 0.20F / this._fgZoom);
                     this.foregroundPictureBox.Refresh();
                     break;
 
                 case Keys.PageUp:
-                    this._fgImgy += (int) (this.foregroundPictureBox.Height * 0.20F / this._fgZoom);
+                    this._fgImgy += (int)(this.foregroundPictureBox.Height * 0.20F / this._fgZoom);
                     this.foregroundPictureBox.Refresh();
                     break;
                 case Keys.Oemplus:
@@ -476,22 +483,22 @@ namespace LaserMarker
             {
                 float oldzoom = this._bgZoom;
 
-                int x = mousePosNow.X - (int) this._bgImgx;
-                int y = mousePosNow.Y - (int) this._bgImgy;
+                int x = mousePosNow.X - (int)this._bgImgx;
+                int y = mousePosNow.Y - (int)this._bgImgy;
 
 
                 if (e.Delta > 0)
                 {
-                    this._bgZoom = (float) (this._bgZoom * 1.1);
-                    oldimagex = (float) (x - (x * 1.1));
-                    oldimagey = (float) (y - (y * 1.1));
+                    this._bgZoom = (float)(this._bgZoom * 1.1);
+                    oldimagex = (float)(x - (x * 1.1));
+                    oldimagey = (float)(y - (y * 1.1));
                 }
 
                 else if (e.Delta < 0)
                 {
-                    this._bgZoom = (float) (this._bgZoom / 1.1);
-                    oldimagex = (float) (x - (x / 1.1));
-                    oldimagey = (float) (y - (y / 1.1));
+                    this._bgZoom = (float)(this._bgZoom / 1.1);
+                    oldimagex = (float)(x - (x / 1.1));
+                    oldimagey = (float)(y - (y / 1.1));
                 }
 
 
@@ -505,25 +512,25 @@ namespace LaserMarker
             {
                 float oldzoom = this._fgZoom;
 
-                int x = mousePosNow.X - (int) this._fgImgx;
-                int y = mousePosNow.Y - (int) this._fgImgy;
+                int x = mousePosNow.X - (int)this._fgImgx;
+                int y = mousePosNow.Y - (int)this._fgImgy;
 
 
                 if (e.Delta > 0)
                 {
-                    this._fgZoom = (float) (this._fgZoom * 1.1);
+                    this._fgZoom = (float)(this._fgZoom * 1.1);
 
-                    oldimagex = (float) (x - (x * 1.1));
-                    oldimagey = (float) (y - (y * 1.1));
+                    oldimagex = (float)(x - (x * 1.1));
+                    oldimagey = (float)(y - (y * 1.1));
                 }
 
                 else if (e.Delta < 0)
                 {
                     if (ezdWidth > 10 && ezdHeight > 10)
-                        this._fgZoom = (float) (this._fgZoom / 1.1);
+                        this._fgZoom = (float)(this._fgZoom / 1.1);
 
-                    oldimagex = (float) (x - (x / 1.1));
-                    oldimagey = (float) (y - (y / 1.1));
+                    oldimagex = (float)(x - (x / 1.1));
+                    oldimagey = (float)(y - (y / 1.1));
                 }
 
 
@@ -575,8 +582,8 @@ namespace LaserMarker
                     var deltaY = mousePosNow.Y - this._bg_mouseDown.Y;
 
                     // calculate new offset of image based on the current zoom factor
-                    this._bgImgx = (int) (this._bgStartx + (deltaX));
-                    this._bgImgy = (int) (this._bgStarty + (deltaY));
+                    this._bgImgx = (int)(this._bgStartx + (deltaX));
+                    this._bgImgy = (int)(this._bgStarty + (deltaY));
 
                     this.backgroundPictureBox.Refresh();
                 }
@@ -588,8 +595,8 @@ namespace LaserMarker
                     var deltaY = mousePosNow.Y - this._fg_mouseDown.Y;
 
                     // calculate new offset of image based on the current zoom factor
-                    this._fgImgx = (int) (this._fgStartx + (deltaX));
-                    this._fgImgy = (int) (this._fgStarty + (deltaY));
+                    this._fgImgx = (int)(this._fgStartx + (deltaX));
+                    this._fgImgy = (int)(this._fgStarty + (deltaY));
 
                     this.foregroundPictureBox.Refresh();
                 }
@@ -621,8 +628,8 @@ namespace LaserMarker
             NezdWidth = (ezdWidth * this._fgZoom);
             NezdHeight = ((ezdHeight / ezdWidth) * NezdWidth);
 
-            e.Graphics.DrawImage(CurrentData.EzdImage, (int) this._fgImgx, (int) this._fgImgy, (int) NezdWidth,
-                (int) NezdHeight);
+            e.Graphics.DrawImage(CurrentData.EzdImage, (int)this._fgImgx, (int)this._fgImgy, (int)NezdWidth,
+                (int)NezdHeight);
         }
 
         private void BackgroundImageBox_Paint(object sender, PaintEventArgs e)
@@ -633,10 +640,10 @@ namespace LaserMarker
             }
 
             NBgWidth = (BgWidth * this._bgZoom);
-            NBgHeight = ((BgHeight / (float) BgWidth) * NBgWidth);
+            NBgHeight = ((BgHeight / (float)BgWidth) * NBgWidth);
 
-            e.Graphics.DrawImage(CurrentData.BgImage, (int) this._bgImgx, (int) this._bgImgy, (int) NBgWidth,
-                (int) NBgHeight);
+            e.Graphics.DrawImage(CurrentData.BgImage, (int)this._bgImgx, (int)this._bgImgy, (int)NBgWidth,
+                (int)NBgHeight);
 
             labelControl1.Text = "X: " + this._bgImgx + " Y: " + this._bgImgy;
         }
@@ -666,22 +673,22 @@ namespace LaserMarker
             {
                 float oldzoom = this._bgZoom;
 
-                int x = this.panel1.Width / 2 - (int) this._bgImgx;
-                int y = this.panel1.Height / 2 - (int) this._bgImgy;
+                int x = this.panel1.Width / 2 - (int)this._bgImgx;
+                int y = this.panel1.Height / 2 - (int)this._bgImgy;
 
 
                 if (scaleMode == ScaleMode.Plus)
                 {
-                    this._bgZoom = (float) (this._bgZoom * 1.1);
-                    oldimagex = (float) (x - (x * 1.1));
-                    oldimagey = (float) (y - (y * 1.1));
+                    this._bgZoom = (float)(this._bgZoom * 1.1);
+                    oldimagex = (float)(x - (x * 1.1));
+                    oldimagey = (float)(y - (y * 1.1));
                 }
 
                 else if (scaleMode == ScaleMode.Minus)
                 {
-                    this._bgZoom = (float) (this._bgZoom / 1.1);
-                    oldimagex = (float) (x - (x / 1.1));
-                    oldimagey = (float) (y - (y / 1.1));
+                    this._bgZoom = (float)(this._bgZoom / 1.1);
+                    oldimagex = (float)(x - (x / 1.1));
+                    oldimagey = (float)(y - (y / 1.1));
                 }
 
 
@@ -695,25 +702,25 @@ namespace LaserMarker
             {
                 float oldzoom = this._fgZoom;
 
-                int x = this.panel1.Width / 2 - (int) this._fgImgx;
-                int y = this.panel1.Height / 2 - (int) this._fgImgy;
+                int x = this.panel1.Width / 2 - (int)this._fgImgx;
+                int y = this.panel1.Height / 2 - (int)this._fgImgy;
 
 
                 if (scaleMode == ScaleMode.Plus)
                 {
-                    this._fgZoom = (float) (this._fgZoom * 1.1);
+                    this._fgZoom = (float)(this._fgZoom * 1.1);
 
-                    oldimagex = (float) (x - (x * 1.1));
-                    oldimagey = (float) (y - (y * 1.1));
+                    oldimagex = (float)(x - (x * 1.1));
+                    oldimagey = (float)(y - (y * 1.1));
                 }
 
                 else if (scaleMode == ScaleMode.Minus)
                 {
                     if (ezdWidth > 10 && ezdHeight > 10)
-                        this._fgZoom = (float) (this._fgZoom / 1.1);
+                        this._fgZoom = (float)(this._fgZoom / 1.1);
 
-                    oldimagex = (float) (x - (x / 1.1));
-                    oldimagey = (float) (y - (y / 1.1));
+                    oldimagex = (float)(x - (x / 1.1));
+                    oldimagey = (float)(y - (y / 1.1));
                 }
 
 
@@ -747,7 +754,7 @@ namespace LaserMarker
                     ? @"EZD file (*.ezd) | *.ezd"
                     : @"Image files (*.jpg, *.jpeg, *.png) | *.jpg; *.jpeg; *.png";
 
-                using (var ofd = new OpenFileDialog {Multiselect = false, ValidateNames = true, Filter = filter})
+                using (var ofd = new OpenFileDialog { Multiselect = false, ValidateNames = true, Filter = filter })
                 {
                     if (ofd.ShowDialog() != DialogResult.OK)
                     {
@@ -757,38 +764,38 @@ namespace LaserMarker
                     switch (type)
                     {
                         case UploadType.Ezd when ofd.FileName != null:
-                        {
-                            this.ezdFileLbl.Text = Path.GetFileName(ofd.FileName);
-
-                            CurrentData.EzdImage = EZD.LoadAndGetImage(
-                                ofd.FileName);
-
-                            if (EZD.CheckSameEntName())
                             {
-                                XtraMessageBox.Show(
-                                    @"В файле существует одноименный поля. Автоподстройка будет работать для одного из этих полей",
-                                    @"Предупреждение", MessageBoxButtons.OK);
+                                this.ezdFileLbl.Text = Path.GetFileName(ofd.FileName);
+
+                                CurrentData.EzdImage = EZD.LoadAndGetImage(
+                                    ofd.FileName);
+
+                                if (EZD.CheckSameEntName())
+                                {
+                                    XtraMessageBox.Show(
+                                        @"В файле существует одноименный поля. Автоподстройка будет работать для одного из этих полей",
+                                        @"Предупреждение", MessageBoxButtons.OK);
+                                }
+
+                                CurrentData.EzdName = ofd.FileName;
+
+                                this.CreateEzdPictureBoxImage(true);
+
+                                break;
                             }
 
-                            CurrentData.EzdName = ofd.FileName;
-
-                            this.CreateEzdPictureBoxImage();
-
-                            break;
-                        }
-
                         case UploadType.image when ofd.FileName != null:
-                        {
-                            this.bgImageLbl.Text = Path.GetFileName(ofd.FileName);
+                            {
+                                this.bgImageLbl.Text = Path.GetFileName(ofd.FileName);
 
-                            CurrentData.BgImage = Image.FromFile(ofd.FileName);
+                                CurrentData.BgImage = Image.FromFile(ofd.FileName);
 
-                            CurrentData.BgName = ofd.FileName;
+                                CurrentData.BgName = ofd.FileName;
 
-                            this.CreateBgPictureBoxImage();
+                                this.CreateBgPictureBoxImage(true);
 
-                            break;
-                        }
+                                break;
+                            }
 
                         default:
                             throw new ArgumentOutOfRangeException(nameof(type), type, null);
@@ -839,10 +846,9 @@ namespace LaserMarker
                     XtraMessageBox.Show("Выберите обложку или ezd файл", "Error", MessageBoxButtons.OK);
                 }
             }
-            catch (Exception )
+            catch (Exception)
             {
             }
-
         }
 
         private void UpdateTopPictures()
@@ -886,12 +892,12 @@ namespace LaserMarker
                     EzdImageName = CurrentData.EzdName,
                     FullImageName = CurrentData.FullImageName,
                     FullImage = CurrentData.FullImage.ToBytes(),
-                    BgImagePosX = (long) this._bgImgx,
-                    BgImagePosY = (long) this._bgImgy,
+                    BgImagePosX = (long)this._bgImgx,
+                    BgImagePosY = (long)this._bgImgy,
                     BgImageScale = this._bgZoom,
                     EzdImageScale = this._fgZoom,
-                    EzdImagePosX = (long) this._fgImgx,
-                    EzdImagePosY = (long) this._fgImgy
+                    EzdImagePosX = (long)this._fgImgx,
+                    EzdImagePosY = (long)this._fgImgy
                 });
         }
 
@@ -1010,11 +1016,11 @@ namespace LaserMarker
 
                 //this._bgStarty = (int)currentData.BgImagePosStartY;
 
-                this._bgImgx = (int) currentData.BgImagePosX;
+                this._bgImgx = (int)currentData.BgImagePosX;
 
-                this._bgImgy = (int) currentData.BgImagePosY;
+                this._bgImgy = (int)currentData.BgImagePosY;
 
-                this._bgZoom = (float) currentData.BgImageScale;
+                this._bgZoom = (float)currentData.BgImageScale;
             }
 
             // Ezd
@@ -1033,11 +1039,11 @@ namespace LaserMarker
 
                 //this._fgStarty = (int)currentData.EzdImagePosStartY;
 
-                this._fgImgx = (int) currentData.EzdImagePosX;
+                this._fgImgx = (int)currentData.EzdImagePosX;
 
-                this._fgImgy = (int) currentData.EzdImagePosY;
+                this._fgImgy = (int)currentData.EzdImagePosY;
 
-                this._fgZoom = (float) currentData.EzdImageScale;
+                this._fgZoom = (float)currentData.EzdImageScale;
             }
         }
 
